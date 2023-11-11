@@ -25,10 +25,10 @@ function Login() {
 
     if (token) {
       updateToken(token);
-      console.log("Login exitoso, token:", token);
       navigate("/usersall");
     } else {
-      setErrorMessage("error setError");
+      alert("error de logueo");
+      navigate("/");
     }
   };
 
