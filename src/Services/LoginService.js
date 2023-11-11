@@ -6,12 +6,13 @@ const LoginService = async function login(username, password) {
 
   console.log(JSON.stringify(data));
 
-  return fetch(URL, {
+  return await fetch(URL, {
     method: "POST",
     body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" },
   })
     .then((response) => response.json())
+    .then((data) => data.token)
     .catch((error) => alert(error));
 
   //   if (response.ok) {

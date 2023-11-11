@@ -5,7 +5,7 @@ import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const { updateToken } = useContext(AuthContext);
+  const { token, updateToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   let [username, setUsername] = useState("");
@@ -21,12 +21,11 @@ function Login() {
   }
 
   const handleLogin = async (username, password) => {
-    const { token } = await LoginService(username, password);
+    const tokenHandler = await LoginService(username, password);
 
-    if (token) {
-      updateToken(token);
-      console.log("Login exitoso, token:", token);
-      navigate("/usersall");
+    if (tokenHandler !== null) {
+      updateToken(tokenHandler);
+      navigate("/homeAdmin");
     } else {
       setErrorMessage("error setError");
     }
