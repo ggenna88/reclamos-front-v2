@@ -1,19 +1,17 @@
 import React, { useContext, useState } from "react";
-import logo from "../logo.svg";
 import LoginService from "../Services/LoginService";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Login() {
   const { updateToken } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState("");
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
 
   function handlerUserChange(event) {
     setUsername(event.target.value);
-    console.log(username);
   }
 
   function handlerPasswordChange(event) {
@@ -27,9 +25,14 @@ function Login() {
       updateToken(token);
       console.log("Login exitoso, token:", token);
       navigate("/usersall");
-    } else {
-      setErrorMessage("error setError");
     }
+    //else{
+      // Swal.fire(
+      //   "Error de validacion",
+      //   "Username o password incorrecto",
+      //   "error"
+      // );
+   // }
   };
 
   const handleSubmit = async (event) => {
@@ -38,31 +41,41 @@ function Login() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              type="username"
-              placeholder="Username"
-              value={username}
-              onChange={handlerUserChange}
-            />
+    <div className="modal" tabIndex="-1" style={{ display: "block" }}>
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Login</h5>
           </div>
-          <div>
-            <input
-              type="password"
-              value={password}
-              placeholder="Password"
-              onChange={handlerPasswordChange}
-            />
-          </div>
-          <div>
-            <button type="submit">Login</button>
-          </div>
-        </form>
-      </header>
+          <form onSubmit={handleSubmit}>
+            <div className="modal-body">
+              <input
+                className="form-control my-3 w-75"
+                type="username"
+                placeholder="Usuario"
+                value={username}
+                onChange={handlerUserChange}
+              ></input>
+              <input
+                className="form-control my-3 w-75"
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={handlerPasswordChange}
+              ></input>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ float: "right" }}
+              >
+                Login
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
