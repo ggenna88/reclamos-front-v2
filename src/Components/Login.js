@@ -26,7 +26,7 @@ function Login() {
     if (token) {
       updateToken(token);
       console.log("Login exitoso, token:", token);
-      navigate("/usersall");
+      navigate("/reclamos");
     } else {
       setErrorMessage("error setError");
     }
