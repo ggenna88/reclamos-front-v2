@@ -26,13 +26,14 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
 
         case 'crearReclamo':
           const requestBodyCrearReclamo = {
-            titulo: "el reclamo numero 7",
-            userid: 1,
-            descripcion: "aca sucedio esto",
-            estadoReclamo: "Nuevo",
-            tipoReclamo: "PorEspacioComun",
-            actualizacion: "aca se actualizo esto",
-            edificioid: 1,
+            reclamo_id:0,
+            titulo: parametros.nuevoReclamo.titulo,
+            userid: parametros.nuevoReclamo.userId,
+            descripcion: parametros.nuevoReclamo.descripcion,
+            estadoReclamo: parametros.nuevoReclamo.estadoReclamo,
+            tipoReclamo: parametros.nuevoReclamo.tipoReclamo,
+            actualizacion: parametros.nuevoReclamo.actualizacion,
+            edificioid: parametros.nuevoReclamo.edificioId
           };
           response = await fetch(`${baseURL}/reclamo/add`, {
             method: "POST",
@@ -78,16 +79,18 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
           break;
 
         case 'actualizarReclamo':
+          console.log('Este es el reclamo en handleSubmit', parametros.nuevoReclamo)
           const requestBodyActualizarReclamo = {
-            titulo: "el reclamo numero 88",
-            userid: 1,
-            descripcion: "aca sucedio esto",
-            estadoReclamo: "Nuevo",
-            tipoReclamo: "PorEspacioComun",
-            actualizacion: "aca se actualizo esto",
-            edificioid: 1,
+            reclamo_id:parametros.nuevoReclamo.reclamoId,
+            titulo: parametros.nuevoReclamo.titulo,
+            userid: parametros.nuevoReclamo.userId,
+            descripcion: parametros.nuevoReclamo.descripcion,
+            estadoReclamo: parametros.nuevoReclamo.estadoReclamo,
+            tipoReclamo: parametros.nuevoReclamo.tipoReclamo,
+            actualizacion: parametros.nuevoReclamo.actualizacion,
+            edificioid: parametros.nuevoReclamo.edificioId
           };
-          const baseUrlActualizarReclamo = `${baseURL}/reclamo/patch/${parametros.id}`;
+          const baseUrlActualizarReclamo = `${baseURL}/reclamo/patch/${parametros.nuevoReclamo.reclamoId}`;
           response = await fetch(baseUrlActualizarReclamo, {
             method: "PATCH",
             headers: {
