@@ -1,40 +1,72 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../Context/AuthContext";
+import React, { useContext, useState, useEffect } from 'react';
+import { AuthContext } from '../Context/AuthContext';
 
 const UsersAll = () => {
   const { token } = useContext(AuthContext);
+  const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
-    console.log("Este es el token:", token);
-
+    console.log("fetchsuers");
     try {
-      var bearer = "Bearer " + token;
-      const response = await fetch("http://localhost:8080/users/all", {
-        method: "GET",
-        withCredentials: true,
+      const response = await fetch('http://localhost:8080/users/all', {
+        method: 'GET',
         headers: {
-          Authorization: bearer,
-          "Content-Type": "application/json",
-        },
-        origin: "http://localhost:3000",
-        credentials: "include",
-        referrerPolicy: "strict-origin-when-cross-origin",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-        });
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const usersData = await response.json();
+        setUsers(usersData);
+      } else {
+        console.error('Error al obtener usuarios:', response.status);
+        // Manejar el error de solicitud
+      }
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
+      // Manejar el error de red u otro error
     }
   };
 
+  useEffect(() => {
+    fetchUsers();
+  }, [token]);
+
   return (
-    <div className="container">
-      <h1>Página de Usuarios</h1>
-      <button onClick={fetchUsers}>Obtener Usuarios</button>
+    <div>
+      <h1>Lista de Usuarios</h1>
+      <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <thead>
+          <tr>
+            <th style={cellStyle}>DNI</th>
+            <th style={cellStyle}>Edad</th>
+            <th style={cellStyle}>Email</th>
+            <th style={cellStyle}>Nombre</th>
+            <th style={cellStyle}>Username</th>
+            <th style={cellStyle}>Tipo de Persona</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.username}>
+              <td style={cellStyle}>{user.dni}</td>
+              <td style={cellStyle}>{user.edad}</td>
+              <td style={cellStyle}>{user.email}</td>
+              <td style={cellStyle}>{user.nombre}</td>
+              <td style={cellStyle}>{user.username}</td>
+              <td style={cellStyle}>{user.tipoPersona}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
+};
+
+const cellStyle = {
+  border: '1px solid black',
+  padding: '8px'
 };
 
 export default UsersAll;
