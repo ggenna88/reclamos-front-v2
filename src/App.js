@@ -12,7 +12,8 @@ import EdificiosAdd from "./Components/EdificiosAdd";
 import NotFound from "./Components/NotFound";
 import DetalleUnidades from "./Components/DetalleUnidades";
 import EdificiosDel from "./Components/EdificiosDel";
-import EdificioUpdate from "./Components/EdificiosUpdate";
+// import EdificioUpdate from "./Components/EdificiosUpdate";
+import UnidadesAdd from "./Components/UnidadesAdd";
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
           <Route path="/usersall" element={<UsersAll />} />
           <Route path="/edificiosall" element={<EdificiosAll />} />
           <Route path="/edificiosadd" element={<EdificiosAdd />} />
-          <Route path="/edificiosupdate" element={<EdificiosUpdate />} />
+          {/* <Route path="/edificiosupdate" element={<EdificiosUpdate />} /> */}
+          <Route path="/edificios/:edificioId/agregar-unidad" element={<UnidadesAdd />} />
           <Route path="/menuadmin" element={<MenuAdmin />} />
           <Route path="/admin-edificio" element={<AdminEdificios />} />
           <Route path="/admin-usuarios" element={<AdminUsuarios />} />

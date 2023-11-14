@@ -1,9 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
+import { useNavigate } from "react-router-dom";
 
 const EdificiosAdd = () => {
   const { token } = useContext(AuthContext);
   const [direccion, setDireccion] = useState('');
+  const navigate = useNavigate();
 
   const handleDireccionChange = (event) => {
     setDireccion(event.target.value);
@@ -21,7 +23,9 @@ const EdificiosAdd = () => {
       });
 
       if (response.ok) {
-        console.log("Edificio creado correctamente");
+        const edificioId = await response.text();
+        console.log("Edificio creado correctamente con ID", edificioId);
+        navigate(`/edificios/${edificioId}/agregar-unidad`);
       } else {
         console.error('Error al crear el edificio:', response.status);
       }
