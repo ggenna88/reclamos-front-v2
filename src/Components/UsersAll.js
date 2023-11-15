@@ -1,8 +1,19 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../Context/AuthContext";
+import React  from "react";
+import { useAuth } from "../Context/AuthContext";
+import { Navigate} from 'react-router-dom';
 
 const UsersAll = () => {
-  const { token } = useContext(AuthContext);
+  const { token, isAuthenticated, userPermissions } = useAuth();
+
+  //console.log("Este es el token:", token);
+  //console.log("Este es el permiso:", userPermissions);
+  //console.log("Esta autenticado:" , isAuthenticated)
+
+  if (!isAuthenticated) {
+    // Redirect to the login page if not authenticated
+    return <Navigate to="/login" />;
+  }
+
 
   const fetchUsers = async () => {
     console.log("Este es el token:", token);
@@ -31,8 +42,8 @@ const UsersAll = () => {
 
   return (
     <div className="container">
-      <h1>Página de Usuarios</h1>
-      <button onClick={fetchUsers}>Obtener Usuarios</button>
+      {userPermissions === 'Administrador' && <h1>Página de Usuarios</h1>}
+      {userPermissions === 'Administrador'  && <button onClick={fetchUsers}>Obtener Usuarios</button>}
     </div>
   );
 };

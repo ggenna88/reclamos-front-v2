@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import LoginService from "../Services/LoginService";
-import { AuthContext } from "../Context/AuthContext";
+import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 function Login() {
-  const { updateToken } = useContext(AuthContext);
+  const { updateToken } = useAuth();
   const navigate = useNavigate();
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
@@ -19,27 +19,40 @@ function Login() {
   }
 
   const handleLogin = async (username, password) => {
-    const { token } = await LoginService(username, password);
-
-    if (token) {
-      updateToken(token);
-      console.log("Login exitoso, token:", token);
-      navigate("/usersall");
+    try {
+      //console.log('entra')
+      const token = await LoginService(username, password);
+      console.log(token)
+      if (token) {
+        // Update the token in your app's state or context
+        const permiso = 'Administrador';
+        updateToken(token, permiso);
+        console.log("Login successful, token:", token);
+        console.log("Login successful, permiso:", permiso);
+  
+        // Navigate to the "/usersall" route
+        navigate("/usersall");
+      } else {
+        // Handle the case where the token is not received (show an error message, etc.)
+        throw new Error('Token not received');
+      }
+    } catch (error) {
+      // Handle errors from LoginService or other parts of the login process
+      console.error('Login error:', error);
+  
+      Swal.fire(
+        "Error de validacion",
+        "Username o password incorrecto",
+        "error"
+      );
     }
-    //else{
-      // Swal.fire(
-      //   "Error de validacion",
-      //   "Username o password incorrecto",
-      //   "error"
-      // );
-   // }
   };
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-    handleLogin(username, password);
+    await handleLogin(username, password);
   };
-
+  
   return (
     <div className="modal" tabIndex="-1" style={{ display: "block" }}>
       <div className="modal-dialog">

@@ -1,19 +1,34 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [userPermissions, setUserPermissions] = useState(localStorage.getItem("permission") || null);
 
-  const updateToken = (newToken) => {
+
+  const updateToken = (newToken, newPermission) => {
     setToken(newToken);
     localStorage.setItem("token", newToken);
+    setUserPermissions(newPermission);
+    localStorage.setItem("permission", newPermission);
+    setAuthenticated(true);
   };
 
+  const logout = () => {
+    //implementar logout con boton
+    setAuthenticated(false); //le saco la autenticacion y lo fuerzo a loguearse nuevamente
+    setUserPermissions(); //lo dejo sin permisos nuevamente para asignarselo en el login
+  }
+
   return (
-    <AuthContext.Provider value={{ token, updateToken }}>
+    <AuthContext.Provider value={{ token, updateToken, isAuthenticated, userPermissions, logout}}>
       {children}
     </AuthContext.Provider>
   );
 };
-export default AuthContext;
+
+const useAuth = () => useContext(AuthContext);
+
+export {AuthProvider , useAuth};

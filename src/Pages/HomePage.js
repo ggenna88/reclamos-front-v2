@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import HomeWorkTwoToneIcon from '@mui/icons-material/HomeWorkTwoTone';
+import HomeCarousel from "../Components/Carousel";
 
 
 export const HomePage = () => {
@@ -20,8 +21,12 @@ export const HomePage = () => {
             </button>
           </div>
         </header>
-
-        <footer></footer>
+        <div>
+            <HomeCarousel/>
+          </div>
+        <footer>
+          
+        </footer>
       </div>
     </>
   );
