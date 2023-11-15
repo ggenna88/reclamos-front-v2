@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import GetAllUsers from "../../Services/UsersService";
+import { GetAllUsers } from "../../Services/UsersService";
 import { UsersAdminRow } from "./UsersAdminRow";
 import { UsersAdminModalForm } from "./UsersAdminModalForm";
 import { Navbar } from "../NavBar";
@@ -53,6 +53,7 @@ const UsersAdmin = () => {
               users.map(
                 ({ nombre, dni, edad, username, email, tipoPersona }) => (
                   <UsersAdminRow
+                    id={dni}
                     key={dni}
                     nombre={nombre}
                     dni={dni}

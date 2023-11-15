@@ -1,23 +1,19 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import OptionSelectDropdown from "../FormSelectOption";
+import OptionSelectDropdown from "../OptionSelectDropdown";
+import { Navigate } from "react-router-dom";
+import { AddUser } from "../../Services/UsersService";
 
 export const UsersAdminForm = ({
   handlerCloseForm,
   userSelected,
   initialUserForm,
 }) => {
-  const handlerAddUser = (user) => {
-    //invocar servicio addUser
-    // Swal.fire(
-    //   user.id === 0 ? "Usuario creado" : "Usuario actualizado",
-    //   user.id === 0
-    //     ? "El usuario ha sido creado con éxito!"
-    //     : "El usuario ha sido actualizado con éxito!",
-    //   "success"
-    // );
-    // handlerCloseForm();
-    // Navigate("/usersAdmin");
+  const handlerAddUser = async (user) => {
+    const resUser = await AddUser(user);
+    resUser ? alert("Usuario creado") : alert("Usuario actualizado");
+    handlerCloseForm();
+    Navigate("/usersAdmin");
   };
 
   const [userForm, setUserForm] = useState(userSelected);
@@ -37,20 +33,17 @@ export const UsersAdminForm = ({
       ...userForm,
       [name]: value,
     });
+    console.log(userForm);
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
     if (!username || (dni === 0 && !password) || !email) {
-      // Swal.fire(
-      //   "Error de validación",
-      //   "Debe completar los datos del formulario.",
-      //   "error"
-      // );
+      alert("Error de validación");
       return;
     }
     if (!email.includes("@")) {
-      // Swal.fire("Error de validación", "Email incorrecto.", "error");
+      alert("Error de validación");
     }
     handlerAddUser(userForm);
     setUserForm(initialUserForm);
@@ -89,14 +82,12 @@ export const UsersAdminForm = ({
         value={email}
         onChange={onInputChange}
       />
-      <input
-        className="form-control my-3 w-75"
-        placeholder="Tipo Persona"
-        name="tipoPersona"
-        value={tipoPersona}
-        onChange={onInputChange}
+      <OptionSelectDropdown
+        listOption={["Administrador", "Usuario"]}
+        userForm={userForm}
+        setUserForm={setUserForm}
+        tipoPersona={tipoPersona}
       />
-      <OptionSelectDropdown listOption={["Administrador", "Usuario"]} />
       <input
         className="form-control my-3 w-75"
         placeholder="Username"
