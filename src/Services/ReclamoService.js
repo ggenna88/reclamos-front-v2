@@ -104,6 +104,27 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
             return null;
           }
           break;
+          case 'filterReclamos':
+            console.log('Estos son los filtros en service', parametros.filtros.userId, parametros.filtros.buildingId, parametros.filtros.estadoReclamo, parametros.filtros.tipoReclamo)
+            const queryParams = new URLSearchParams({
+              userid: parametros.filtros.userId,
+              edificioid: parametros.filtros.buildingId,
+              state: parametros.filtros.estadoReclamo,
+              type: parametros.filtros.tipoReclamo,
+            });
+    
+            response = await fetch(`${baseURL}/reclamo/filter?${queryParams.toString()}`, {
+              method: "GET",
+              headers: {
+                Authorization: bearer,
+                "Content-Type": "application/json",
+              },
+            });
+    
+            const dataFilterReclamos = await response.json();
+            console.log(dataFilterReclamos);
+            return dataFilterReclamos;
+          break;  
 
         default:
           console.error('Tipo de llamada no válido');

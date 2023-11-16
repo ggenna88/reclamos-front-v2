@@ -102,8 +102,22 @@ const GestionReclamos = () => {
     setReclamoEnEdicion(null);
   };
 
-  const handleFilter = (filtros) => {
-    console.log('Filtros aplicados:', filtros);
+  const handleFilter = async (filtros) => {
+    try {
+      // Provide default values for the parameters to avoid sending undefined
+      const { userId = null, buildingId = null, state = null, type = null } = filtros;
+      console.log('Estos son los filtros en Gestion', filtros)
+
+  
+      const reclamosData = await ReclamoService({
+        tipoLlamada: 'filterReclamos',
+        parametros: { token, filtros },
+      });
+  
+      setReclamos(reclamosData);
+    } catch (error) {
+      console.error('Error al aplicar filtros:', error);
+    }
   };
 
   return (

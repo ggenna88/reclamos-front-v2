@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Carousel from 'react-bootstrap/Carousel';
 
 function ReclamoCard({ reclamo, onEdit, onDelete }) {
   const handleEditClick = () => {
@@ -17,10 +18,22 @@ function ReclamoCard({ reclamo, onEdit, onDelete }) {
 
   return (
     <Card style={{ width: '18rem' }}>
+      <Carousel>
+        {reclamo.imagenes && reclamo.imagenes.length > 0 && reclamo.imagenes.map((imagen, index) => (
+          <Carousel.Item key={index}>
+            <img
+              className="d-block w-100"
+              src={`data:image/jpeg;base64,${imagen.datosImagen}`} // Asegúrate de que el formato de la imagen sea correcto
+              alt={`Imagen ${index + 1}`}
+            />
+          </Carousel.Item>
+        ))}
+      </Carousel>
       <Card.Body>
         <Card.Title>{reclamo.titulo}</Card.Title>
         <Card.Text>{reclamo.descripcion}</Card.Text>
         <Card.Text>Estado: {reclamo.estadoReclamo}</Card.Text>
+        <Card.Text>Tipo: {reclamo.tipoReclamo}</Card.Text>
         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
           <Button variant="primary" onClick={handleEditClick}>
             Editar
