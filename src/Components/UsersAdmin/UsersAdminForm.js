@@ -1,19 +1,20 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import OptionSelectDropdown from "../OptionSelectDropdown";
-import { Navigate } from "react-router-dom";
 import { AddUser } from "../../Services/UsersService";
+import UsersAdmin from "./UsersAdmin";
 
 export const UsersAdminForm = ({
   handlerCloseForm,
   userSelected,
   initialUserForm,
+  passForm,
+  setPassForm,
 }) => {
   const handlerAddUser = async (user) => {
     const resUser = await AddUser(user);
     resUser ? alert("Usuario creado") : alert("Usuario actualizado");
     handlerCloseForm();
-    Navigate("/usersAdmin");
   };
 
   const [userForm, setUserForm] = useState(userSelected);
@@ -45,13 +46,16 @@ export const UsersAdminForm = ({
     if (!email.includes("@")) {
       alert("Error de validación");
     }
-    handlerAddUser(userForm);
+    handlerAddUser(userForm).then(() => {
+      return <UsersAdmin />;
+    });
     setUserForm(initialUserForm);
   };
 
   const onCloseForm = () => {
     handlerCloseForm();
     setUserForm(initialUserForm);
+    setPassForm(false);
   };
 
   return (
@@ -60,6 +64,7 @@ export const UsersAdminForm = ({
         className="form-control my-3 w-75"
         placeholder="DNI"
         name="dni"
+        value={dni}
         onChange={onInputChange}
       />
       <input
@@ -73,6 +78,7 @@ export const UsersAdminForm = ({
         className="form-control my-3 w-75"
         placeholder="Edad"
         name="edad"
+        value={edad}
         onChange={onInputChange}
       />
       <input
@@ -83,7 +89,7 @@ export const UsersAdminForm = ({
         onChange={onInputChange}
       />
       <OptionSelectDropdown
-        listOption={["Administrador", "Usuario"]}
+        listOption={["Administrador", "Inquilino"]}
         userForm={userForm}
         setUserForm={setUserForm}
         tipoPersona={tipoPersona}
@@ -95,14 +101,16 @@ export const UsersAdminForm = ({
         value={username}
         onChange={onInputChange}
       />
-      <input
-        className="form-control my-3 w-75"
-        placeholder="Password"
-        type="password"
-        name="password"
-        value={password}
-        onChange={onInputChange}
-      />
+      {passForm && (
+        <input
+          className="form-control my-3 w-75"
+          placeholder="Password"
+          type="password"
+          name="password"
+          value={password}
+          onChange={onInputChange}
+        />
+      )}
       <button className="btn btn-primary" type="submit">
         {dni > 1 ? "Editar" : "Crear"}
       </button>

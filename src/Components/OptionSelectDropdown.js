@@ -19,12 +19,13 @@ function OptionSelectDropdown({
       onChange={onInputChange}
       name="tipoPersona"
       value={tipoPersona}
+      defaultValue={tipoPersona}
       aria-label="Default select example"
       className="my-3 w-75"
     >
-      <option>Tipo de persona....</option>
+      <option>{tipoPersona}</option>
       {listOption.map((option, index) => (
-        <option key={index} value={index}>
+        <option key={index} value={option}>
           {option}
         </option>
       ))}

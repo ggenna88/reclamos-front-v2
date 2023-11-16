@@ -2,19 +2,14 @@
 import { useState } from "react";
 import { UsersAdminForm } from "./UsersAdminForm.js";
 
-export const UsersAdminModalForm = ({ setVisibleForm }) => {
-  const initialUserForm = {
-    dni: 1,
-    edad: 0,
-    email: "",
-    nombre: "",
-    tipoPersona: "",
-    username: "",
-    password: "",
-  };
-
-  const [userSelected, setUserSelected] = useState(initialUserForm);
-
+export const UsersAdminModalForm = ({
+  setVisibleForm,
+  initialUserForm,
+  userSelected,
+  setUserSelected,
+  passForm,
+  setPassForm,
+}) => {
   const handlerCloseForm = () => {
     setVisibleForm(false);
     setUserSelected(initialUserForm);
@@ -41,6 +36,8 @@ export const UsersAdminModalForm = ({ setVisibleForm }) => {
                 userSelected={userSelected}
                 initialUserForm={initialUserForm}
                 handlerCloseForm={handlerCloseForm}
+                passForm={passForm}
+                setPassForm={setPassForm}
               />
             </div>
           </div>

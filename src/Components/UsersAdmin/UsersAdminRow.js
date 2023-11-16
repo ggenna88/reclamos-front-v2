@@ -8,6 +8,8 @@ export const UsersAdminRow = ({
   username,
   email,
   tipoPersona,
+  handlerUserSelectedForm,
+  setPassForm,
 }) => {
   return (
     <tr>
@@ -18,13 +20,47 @@ export const UsersAdminRow = ({
       <td>{username}</td>
       <td>{email}</td>
       <td>
-        <button className="btn btn-secondary" type="button">
+        <button
+          className="btn btn-secondary"
+          type="button"
+          onClick={() => {
+            setPassForm(false);
+            handlerUserSelectedForm({
+              nombre,
+              dni,
+              edad,
+              username,
+              email,
+              tipoPersona,
+            });
+          }}
+        >
           Update
         </button>
       </td>
+
       <td>
         <button className="btn btn-danger" type="button">
           Remove
+        </button>
+      </td>
+      <td>
+        <button
+          className="btn btn-secondary"
+          type="button"
+          onClick={() => {
+            setPassForm(true);
+            handlerUserSelectedForm({
+              nombre,
+              dni,
+              edad,
+              username,
+              email,
+              tipoPersona,
+            });
+          }}
+        >
+          Password
         </button>
       </td>
     </tr>

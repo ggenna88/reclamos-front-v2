@@ -28,7 +28,7 @@ const Reclamo = () => {
     };
     fetchReclamo()
       .then((res) => setReclamo(res.imagenes[0]))
-      .then((res) => {
+      .then(() => {
         console.log(reclamo);
         setImageSrc("data:image/jpeg;base64," + reclamo.datosImagen);
       });

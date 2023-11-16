@@ -7,6 +7,24 @@ import { Navbar } from "../NavBar";
 const UsersAdmin = () => {
   const [users, setUsers] = useState([]);
   const [visibleForm, setVisibleForm] = useState(false);
+  const [passForm, setPassForm] = useState(true);
+
+  const initialUserForm = {
+    dni: null,
+    edad: null,
+    email: "",
+    nombre: "",
+    tipoPersona: "Tipo de persona...",
+    username: "",
+    password: "",
+  };
+
+  const [userSelected, setUserSelected] = useState(initialUserForm);
+
+  const handlerUserSelectedForm = (user) => {
+    setUserSelected({ ...user });
+    setVisibleForm(true);
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -15,9 +33,10 @@ const UsersAdmin = () => {
       return initialUsers;
     };
     fetchUsers().then((res) => setUsers(res));
-  }, []);
+  }, [visibleForm]);
 
   const handlerOpenForm = () => {
+    setPassForm(true);
     setVisibleForm(true);
   };
 
@@ -25,7 +44,16 @@ const UsersAdmin = () => {
     <div className="container">
       <Navbar />
       <h1>ABM de usuarios</h1>
-      {!visibleForm || <UsersAdminModalForm setVisibleForm={setVisibleForm} />}
+      {!visibleForm || (
+        <UsersAdminModalForm
+          setVisibleForm={setVisibleForm}
+          initialUserForm={initialUserForm}
+          userSelected={userSelected}
+          setUserSelected={setUserSelected}
+          passForm={passForm}
+          setPassForm={setPassForm}
+        />
+      )}
       {users.length === 0 ? (
         <div className="alert alert-warning my-4">
           No hay usuarios en el sistema.
@@ -40,8 +68,9 @@ const UsersAdmin = () => {
               <th>Tipo usuario</th>
               <th>Email</th>
               <th>Username</th>
-              <th>Update</th>
-              <th>Remove</th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -61,6 +90,8 @@ const UsersAdmin = () => {
                     email={email}
                     tipoPersona={tipoPersona}
                     username={username}
+                    handlerUserSelectedForm={handlerUserSelectedForm}
+                    setPassForm={setPassForm}
                   />
                 )
               )
@@ -71,7 +102,6 @@ const UsersAdmin = () => {
       <button className="btn btn-primary my-2" onClick={handlerOpenForm}>
         Nuevo
       </button>
-      <button className="btn btn-primary my-2 mx-2">Guardar</button>
     </div>
   );
 };
