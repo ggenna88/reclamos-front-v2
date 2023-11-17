@@ -1,6 +1,9 @@
+//EdificiosAdd.js
+
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import { useNavigate } from "react-router-dom";
+import BackButton from './BackButton';
 
 const EdificiosAdd = () => {
   const { token } = useContext(AuthContext);
@@ -39,14 +42,29 @@ const EdificiosAdd = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container mt-4">
       <h1>Agregar Edificio</h1>
-      <label>
-        Dirección del Edificio:
-        <input type="text" value={direccion} onChange={handleDireccionChange} />
-      </label>
-      <button onClick={handleAgregarEdificio}>Agregar Edificio</button>
-      {/* Puedes mostrar la lista de edificios aquí si lo deseas */}
+      <form>
+        <div className="mb-3">
+          <label htmlFor="direccion" className="form-label">
+            Dirección del Edificio:
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="direccion"
+            value={direccion}
+            onChange={handleDireccionChange}
+          />
+        </div>
+        <button type="button" className="btn btn-primary" onClick={handleAgregarEdificio}>
+          Agregar Edificio
+        </button>
+      </form>
+      <div className='text-center mt-3'>
+          <BackButton/>
+      </div>
+
     </div>
   );
 };

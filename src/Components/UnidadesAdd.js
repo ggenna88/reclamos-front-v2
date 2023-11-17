@@ -9,7 +9,7 @@ const UnidadesAdd = () => {
   const { edificioId } = useParams();
   const [numero, setNumero] = useState('');
   const [piso, setPiso] = useState('');
-  const [estado, setEstado] = useState('');
+  const [estado, setEstado] = useState('Inhabitada');
   const navigate = useNavigate();
 
   const handleGuardarYContinuar = async () => {
@@ -25,7 +25,7 @@ const UnidadesAdd = () => {
       console.log("Unidad creada con éxito", unidad);
       setNumero('');
       setPiso('');
-      setEstado('');
+      setEstado('Inhabitada');
 
     } catch (error) {
       console.error('Error:', error);
@@ -46,7 +46,7 @@ const UnidadesAdd = () => {
       console.log("Unidad creada con éxito", unidad);
       setNumero('');
       setPiso('');
-      setEstado('');
+      setEstado('Inhabitada');
 
     } catch (error) {
       console.error('Error:', error);
@@ -55,27 +55,55 @@ const UnidadesAdd = () => {
   };
 
   return (
-    <div>
+    <div className="container mt-4">
       <h1>Agregar Unidad</h1>
-      <label>
-        Número:
-        <input type="text" value={numero} onChange={(e) => setNumero(e.target.value)} />
-      </label>
-      <label>
-        Piso:
-        <input type="text" value={piso} onChange={(e) => setPiso(e.target.value)} />
-      </label>
-      <label>
-        Estado:
-        <select value={estado} onChange={(e) => setEstado(e.target.value)}>
-          <option value="Alquilada">Alquilada</option>
-          <option value="HabitadaPorDuenio">Habitada por dueño</option>
-          <option value="Inhabitada">Inhabitada</option>
-        </select>
-      </label>
-      {/* Puedes agregar más campos para otras propiedades de la unidad si es necesario */}
-      <button onClick={handleGuardarYContinuar}>Guardar y Continuar</button>
-      <button onClick={handleGuardarYFinalizar}>Guardar y Finalizar</button>
+      <form>
+        <div className="mb-3">
+          <label htmlFor="numero" className="form-label">
+            Número:
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="numero"
+            value={numero}
+            onChange={(e) => setNumero(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="piso" className="form-label">
+            Piso:
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="piso"
+            value={piso}
+            onChange={(e) => setPiso(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="estado" className="form-label">
+            Estado:
+          </label>
+          <select
+            className="form-select"
+            id="estado"
+            value={estado}
+            onChange={(e) => setEstado(e.target.value)}
+          >
+            <option value="Inhabitada">Inhabitada</option>
+            <option value="Alquilada">Alquilada</option>
+            <option value="HabitadaPorDuenio">Habitada por dueño</option>
+          </select>
+        </div>
+        <button type="button" className="btn btn-primary me-2" onClick={handleGuardarYContinuar}>
+          Guardar y Continuar
+        </button>
+        <button type="button" className="btn btn-primary" onClick={handleGuardarYFinalizar}>
+          Guardar y Finalizar
+        </button>
+      </form>
     </div>
   );
 };

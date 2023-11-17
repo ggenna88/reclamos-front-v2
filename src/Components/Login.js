@@ -26,7 +26,7 @@ function Login() {
     if (token) {
       updateToken(token);
       console.log("Login exitoso, token:", token);
-      navigate("/menuadmin");
+      navigate("/admin-edificio");
     } else {
       setErrorMessage("error setError");
     }

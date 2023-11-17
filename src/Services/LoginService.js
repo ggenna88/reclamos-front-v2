@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const LoginService = async function login(username, password) {
   var URL = "http://localhost:8080/auth/login";
@@ -13,14 +13,6 @@ const LoginService = async function login(username, password) {
   })
     .then((response) => response.json())
     .catch((error) => alert(error));
-
-  //   if (response.ok) {
-  //     const data = await response.json();
-  //     const token = data.token;
-  //     console.log(token);
-  //   } else {
-  //     console.log("credenciales invalidas");
-  //   }
 };
 
 export default LoginService;

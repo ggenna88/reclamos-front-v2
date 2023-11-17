@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import Boton from './Boton';
 
-const EdificioEliminarButton = ({ direccion, onDeleteSuccess }) => {
+const UnidadesDelButton = ({ idUnidad, onDeleteSuccess }) => {
     const { token } = useContext(AuthContext);
 
-    const handleEliminarEdificio = async () => {
+    const handleEliminarUnidad = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/edificios/delete?address=${encodeURIComponent(direccion)}`, {
+            const response = await fetch(`http://localhost:8080/unidades/delete?id=${idUnidad}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -16,10 +16,10 @@ const EdificioEliminarButton = ({ direccion, onDeleteSuccess }) => {
             });
 
             if (response.ok) {
-                console.log("Edificio eliminado correctamente");
+                console.log("Unidad eliminada correctamente");
                 onDeleteSuccess();
             } else {
-                console.error('Error al eliminar el edificio:', response.status);
+                console.error('Error al eliminar unidad:', response.status);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -27,10 +27,10 @@ const EdificioEliminarButton = ({ direccion, onDeleteSuccess }) => {
     };
 
     return (
-        <Boton label="Eliminar" onClick={handleEliminarEdificio}>
+        <Boton label="Eliminar" onClick={handleEliminarUnidad}>
             
         </Boton>
     );
 };
 
-export default EdificioEliminarButton;
+export default UnidadesDelButton;

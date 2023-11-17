@@ -3,12 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Boton from './Boton';
 
-const EdificioModificarButton = ({ id, direccion }) => {
+const UnidadUpdateButton = ({ uni }) => {
     return (
-        <Link to={`/edificios-update/${id}/${encodeURIComponent(direccion)}`}>
+        <Link to={`/modificar-unidad/${uni.id}`}>
             <Boton label="Modificar"></Boton>
         </Link>
     );
 };
 
-export default EdificioModificarButton;
+export default UnidadUpdateButton;

@@ -24,11 +24,13 @@ const AdminEdificios = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Administrar Edificios</h1>
-      <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
-        <Boton label="Ver edificios" onClick={handleEdificiosAll} />
-        <Boton label="Agregar edificio" onClick={handleEdificiosAdd} />
+    <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
+      <h1 className="mb-4 mt-0">Administrar Edificios</h1>
+      <div className="text-center">
+        <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
+          <Boton label="Ver edificios" onClick={handleEdificiosAll} />
+          <Boton label="Agregar edificio" onClick={handleEdificiosAdd} />
+        </div>
       </div>
     </div>
   );
