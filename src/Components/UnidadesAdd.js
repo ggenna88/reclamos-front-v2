@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import fetchData from './FetchUtil';
