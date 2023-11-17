@@ -1,10 +1,11 @@
-import React, { useContext, useState, useEffect} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import UnidadPersonasButton from './UnidadPersonasButton';
 import { useParams } from 'react-router-dom';
 import UnidadUpdateButton from './UnidadUpdateButton';
 import BackButton from './BackButton';
 import UnidadesDelButton from './UnidadesDel';
+import UnidadesAddButton from './UnidadesAddButton';
 
 const UnidadesAll = () => {
     const { id, direccion } = useParams();
@@ -38,7 +39,7 @@ const UnidadesAll = () => {
     }, [token]);
 
     const handleEliminarSuccess = () => {
-        fetchUnidad();
+        fetchUnidad(id);
     };
 
     const renderTabla = () => {
@@ -70,7 +71,7 @@ const UnidadesAll = () => {
                                     idUnidad={uni.id}
                                     onDeleteSuccess={handleEliminarSuccess}
                                 />
-                                
+
 
                             </td>
                         </tr>
@@ -78,25 +79,28 @@ const UnidadesAll = () => {
                 </tbody>
             </table>
         );
- };
+    };
 
- const renderVacio = () => {
-    return (
-        <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
-        <h2>No hay unidades para mostrar</h2>
+    const renderVacio = () => {
+        return (
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
+                <h2>No hay unidades para mostrar</h2>
 
-    </div>
-    );
+            </div>
+        );
 
-}
+    }
 
     return (
         <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
             <h1>Lista de unidades del edificio {direccion}</h1>
             {unidad.length === 0 ? renderVacio() : renderTabla()}
             <div className='text-center mt-3'>
-          <BackButton/>
-      </div>
+                <UnidadesAddButton edificioId={id} />
+            </div>
+            <div className='text-center mt-3'>
+                <BackButton />
+            </div>
         </div>
     );
 };

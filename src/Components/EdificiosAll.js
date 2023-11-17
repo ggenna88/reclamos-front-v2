@@ -43,35 +43,35 @@ const EdificiosAll = () => {
     const renderTabla = () => {
         return (
             <table className="table table-hover tabla-edificiosall" style={{ borderCollapse: 'collapse', width: '100%' }}>
-            <thead>
-                <tr>
-                    <th style={cellStyle}>Dirección</th>
-                    <th style={cellStyle}></th>
-                    <th style={cellStyle}></th>
-                    <th style={cellStyle}></th>
-                </tr>
-            </thead>
-            <tbody>
-                {edif.map((edificio) => (
-                    <tr key={edificio.direccion}>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{edificio.direccion}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>
-                            <EdificioVerButton id={edificio.id} direccion={edificio.direccion} />
-                        </td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>
-                            <EdificioEliminarButton
-                                direccion={edificio.direccion}
-                                onDeleteSuccess={handleEliminarSuccess}
-                            />
-
-                        </td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>
-                        <EdificioModificarButton id={edificio.id} direccion={edificio.direccion} />
-                        </td>
+                <thead>
+                    <tr>
+                        <th style={cellStyle}>Dirección</th>
+                        <th style={cellStyle}></th>
+                        <th style={cellStyle}></th>
+                        <th style={cellStyle}></th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {edif.map((edificio) => (
+                        <tr key={edificio.direccion}>
+                            <td style={{ ...cellStyle, textAlign: 'center' }}>{edificio.direccion}</td>
+                            <td style={{ ...cellStyle, textAlign: 'center' }}>
+                                <EdificioVerButton id={edificio.id} direccion={edificio.direccion} />
+                            </td>
+                            <td style={{ ...cellStyle, textAlign: 'center' }}>
+                                <EdificioModificarButton id={edificio.id} direccion={edificio.direccion} />
+                            </td>
+                            <td style={{ ...cellStyle, textAlign: 'center' }}>
+                                <EdificioEliminarButton
+                                    direccion={edificio.direccion}
+                                    onDeleteSuccess={handleEliminarSuccess}
+                                />
+
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         );
 
 
@@ -81,22 +81,22 @@ const EdificiosAll = () => {
     const renderVacio = () => {
         return (
             <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
-            <h2>No hay edificios para mostrar</h2>
+                <h2>No hay edificios para mostrar</h2>
 
-        </div>
+            </div>
         );
 
     }
 
 
 
-      return (
-            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
+    return (
+        <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
             <h1>Lista de Edificios</h1>
-          {edif.length === 0 ? renderVacio() : renderTabla()}
-          <BackButton/>
+            {edif.length === 0 ? renderVacio() : renderTabla()}
+            <BackButton />
         </div>
-      );
+    );
 };
 
 const cellStyle = {

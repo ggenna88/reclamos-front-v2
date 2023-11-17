@@ -62,7 +62,7 @@ const EdificiosAdd = () => {
         </button>
       </form>
       <div className='text-center mt-3'>
-          <BackButton/>
+        <BackButton />
       </div>
 
     </div>
