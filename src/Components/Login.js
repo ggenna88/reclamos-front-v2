@@ -25,7 +25,12 @@ function Login() {
 
     if (token) {
       updateToken(token);
+<<<<<<< HEAD
       navigate("/usersall");
+=======
+      console.log("Login exitoso, token:", token);
+      navigate("/admin-edificio");
+>>>>>>> reclamos/front/v2/LoreEdificios
     } else {
       alert("error de logueo");
       navigate("/");

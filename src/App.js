@@ -2,8 +2,15 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./Components/Login";
 import { AuthProvider } from "./Context/AuthContext";
-import UsersAdmin from "./Components/UsersAdmin/UsersAdmin";
-import Reclamo from "./Components/Reclamo";
+import AdminEdificios from "./Components/AdminEdificios";
+import EdificiosAll from "./Components/EdificiosAll";
+import EdificiosAdd from "./Components/EdificiosAdd";
+import NotFound from "./Components/NotFound";
+import EdificiosDel from "./Components/EdificiosDel";
+import EdificiosUpdate from "./Components/EdificiosUpdate";
+import UnidadesAdd from "./Components/UnidadesAdd";
+import UnidadesAll from "./Components/UnidadesAll";
+import UnidadUpdate from "./Components/UnidadUpdate";
 
 function App() {
   return (
@@ -11,8 +18,27 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/usersall" element={<UsersAdmin />} />
-          <Route path="/reclamo" element={<Reclamo />} />
+          <Route path="/edificiosall" element={<EdificiosAll />} />
+          <Route path="/edificiosadd" element={<EdificiosAdd />} />
+          <Route
+            path="/edificios-update/:id/:direccion"
+            element={<EdificiosUpdate />}
+          />
+          <Route
+            path="/edificios/:edificioId/agregar-unidad"
+            element={<UnidadesAdd />}
+          />
+          <Route path="/admin-edificio" element={<AdminEdificios />} />
+          <Route
+            path="/detalle-unidades/:id/:direccion"
+            element={<UnidadesAll />}
+          />
+          <Route path="/modificar-unidad/:id" element={<UnidadUpdate />} />
+          <Route
+            path="/eliminar-edificio/:direccion"
+            element={<EdificiosDel />}
+          />
+          <Route path="/*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </Router>
