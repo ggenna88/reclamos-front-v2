@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
+import { Modal, Button, Form, Dropdown, Carousel } from 'react-bootstrap';
 
 const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [titulo, setTitulo] = useState('');
@@ -10,6 +10,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [edificioId, setEdificioId] = useState('');
   const [estadoReclamo, setEstadoReclamo] = useState('Nuevo');
   const [reclamoId, setReclamoId] = useState('');
+  const [imagenes, setImagenes] = useState([]);
 
   useEffect(() => {
     if (reclamoEnEdicion) {
@@ -21,8 +22,39 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       setEdificioId(reclamoEnEdicion.edificioid);
       setEstadoReclamo(reclamoEnEdicion.estadoReclamo);
       setReclamoId(reclamoEnEdicion.reclamo_id);
+      setImagenes(reclamoEnEdicion.imagenes || []);
     }
   }, [reclamoEnEdicion]);
+
+  const handleEliminarImagen = (id) => {
+    const nuevasImagenes = imagenes.filter((imagen) => imagen.id !== id);
+    setImagenes(nuevasImagenes);
+  };
+
+  const handleDescripcionImagenChange = (id, value) => {
+    const nuevasImagenes = imagenes.map((imagen) =>
+      imagen.id === id ? { ...imagen, descripcion: value } : imagen
+    );
+    setImagenes(nuevasImagenes);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const datosImagen = reader.result.split(',')[1];
+        const nuevaImagen = {
+          id: imagenes.length + 1,
+          nombreImagen: `imagen${imagenes.length + 1}`,
+          descripcion: '',
+          datosImagen
+        };
+        setImagenes([...imagenes, nuevaImagen]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,9 +66,11 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       userId,
       edificioId,
       estadoReclamo,
-      reclamoId
+      reclamoId,
+      imagenes
     });
 
+    // Resto del código para limpiar los estados y cerrar el modal
     setTitulo('');
     setDescripcion('');
     setTipoReclamo('');
@@ -45,6 +79,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
     setEdificioId('');
     setEstadoReclamo('');
     setReclamoId('');
+    setImagenes([]);
     onClose();
   };
 
@@ -120,6 +155,36 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
               value={actualizacion}
               onChange={(e) => setActualizacion(e.target.value)}
             />
+          </Form.Group>
+          <Form.Group controlId="formImagenes">
+            <Form.Label>Imágenes:</Form.Label>
+            <Carousel>
+              {imagenes.map((imagen) => (
+                <Carousel.Item key={imagen.id}>
+                  {imagen.datosImagen ? (
+                    <>
+                      <img
+                        className="d-block w-100"
+                        src={`data:image/jpeg;base64,${imagen.datosImagen}`}
+                        alt={`Imagen ${imagen.id}`}
+                      />
+                      <Carousel.Caption>
+                        <Form.Control
+                          type="text"
+                          placeholder="Descripción de la imagen"
+                          value={imagen.descripcion}
+                          onChange={(e) => handleDescripcionImagenChange(imagen.id, e.target.value)}
+                        />
+                        <Button variant="danger" size="sm" onClick={() => handleEliminarImagen(imagen.id)}>
+                          Eliminar
+                        </Button>
+                      </Carousel.Caption>
+                    </>
+                  ) : null}
+                </Carousel.Item>
+              ))}
+            </Carousel>
+            <input type="file" onChange={handleFileChange} />
           </Form.Group>
           <Button variant="success" type="submit">
             {reclamoEnEdicion ? 'Actualizar' : 'Crear'}

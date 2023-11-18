@@ -124,7 +124,9 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
             const dataFilterReclamos = await response.json();
             console.log(dataFilterReclamos);
             return dataFilterReclamos;
-          break;  
+          break;
+          
+          
 
         default:
           console.error('Tipo de llamada no válido');
