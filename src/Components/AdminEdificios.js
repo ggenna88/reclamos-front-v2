@@ -29,7 +29,6 @@ const AdminEdificios = () => {
       <div className="text-center">
         <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
           <Boton label="Ver edificios" onClick={handleEdificiosAll} />
-          <Boton label="Agregar edificio" onClick={handleEdificiosAdd} />
         </div>
       </div>
     </div>

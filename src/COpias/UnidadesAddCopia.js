@@ -1,26 +1,24 @@
 
-//UnidadesAdd.js
-
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import fetchData from './FetchUtil';
-import { Navigate } from 'react-router-dom';
 
-const UnidadesAdd = ({ edificioId, onClose, reload }) => {
+const UnidadesAdd = () => {
   const { token } = useContext(AuthContext);
+  const { edificioId } = useParams();
   const [numero, setNumero] = useState('');
   const [piso, setPiso] = useState('');
   const [estado, setEstado] = useState('Inhabitada');
-  const edificioIdValue = edificioId.edificioId;
-  const navigate = useNavigate;
+  const navigate = useNavigate();
 
   const handleGuardarYContinuar = async () => {
+    console.log(edificioId)
     try {
       const unidad = await fetchData(
         'http://localhost:8080/unidades/add',
         'POST',
-        { nro: numero, piso, estado, edificioID: edificioIdValue },
+        { nro: numero, piso, estado, edificioID: edificioId },
         token
       );
 
@@ -41,7 +39,7 @@ const UnidadesAdd = ({ edificioId, onClose, reload }) => {
       const unidad = await fetchData(
         'http://localhost:8080/unidades/add',
         'POST',
-        { nro: numero, piso, estado, edificioID: edificioIdValue },
+        { nro: numero, piso, estado, edificioID: edificioId },
         token
       );
 
@@ -49,12 +47,11 @@ const UnidadesAdd = ({ edificioId, onClose, reload }) => {
       setNumero('');
       setPiso('');
       setEstado('Inhabitada');
-      onClose();
-      reload();
 
     } catch (error) {
       console.error('Error:', error);
     }
+    navigate('/edificiosall');
   };
 
   return (

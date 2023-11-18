@@ -1,19 +1,14 @@
-// EdificiosAll.js
+
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import EdificioEliminarButton from './EdificiosDel';
 import EdificioModificarButton from './EdificioModificarButton';
 import EdificioVerButton from './EdificioVerButton';
 import BackButton from './BackButton';
-import EdificiosAdd from './EdificiosAdd';
-import Boton from './Boton';
 
 const EdificiosAll = () => {
     const { token } = useContext(AuthContext);
     const [edif, setEdif] = useState([]);
-    const [showEdificioAddModal, setShowEdificioAddModal] = useState(false);
-    const [showUnidadesAddModal, setShowUnidadesAddModal] = useState(false);
-    const [idEdificio, setIdEdificio] = useState(null);
 
     const fetchEdif = async () => {
         try {
@@ -41,19 +36,8 @@ const EdificiosAll = () => {
         fetchEdif();
     }, [token]);
 
-    const handleReload = () => {
+    const handleEliminarSuccess = () => {
         fetchEdif();
-    };
-
-
-    const openModal = () => {
-        setShowEdificioAddModal(true);
-    };
-
-    const closeModal = () => {
-        setShowEdificioAddModal(false);
-        setShowUnidadesAddModal(false);
-        setIdEdificio(null);
     };
 
     const renderTabla = () => {
@@ -80,7 +64,7 @@ const EdificiosAll = () => {
                             <td style={{ ...cellStyle, textAlign: 'center' }}>
                                 <EdificioEliminarButton
                                     direccion={edificio.direccion}
-                                    onDeleteSuccess={handleReload}
+                                    onDeleteSuccess={handleEliminarSuccess}
                                 />
 
                             </td>
@@ -108,20 +92,8 @@ const EdificiosAll = () => {
 
     return (
         <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
-            <h1>Gestión de edificios</h1>
+            <h1>Lista de Edificios</h1>
             {edif.length === 0 ? renderVacio() : renderTabla()}
-            <div>
-                <Boton label="Agregar edificio" onClick={openModal} />
-                {showEdificioAddModal && (
-                    <EdificiosAdd
-                        onSubmit={(newIdEdificio) => {
-                            setIdEdificio(newIdEdificio);
-                        }}
-                        onClose={closeModal}
-                        reload={handleReload}
-                    />
-                )}
-            </div>
             <BackButton />
         </div>
     );

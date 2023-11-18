@@ -1,15 +1,14 @@
-//EdificiosAdd.js
+//EdificiosAdd.js con modal y funciona unidad pero sin el modal
 
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
+import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from 'react-bootstrap';
-import UnidadesAdd from './UnidadesAdd';
 
-const EdificiosAdd = ({ onClose, reload }) => {
+const EdificiosAdd = ({ onClose }) => {
   const { token } = useContext(AuthContext);
   const [direccion, setDireccion] = useState('');
-  const [showUnidadesAdd, setShowUnidadesAdd] = useState(false);
-  const [idEdificio, setIdEdificio] = useState(null);
+  const navigate = useNavigate();
 
 
   const handleAgregarEdificio = async (e) => {
@@ -27,8 +26,7 @@ const EdificiosAdd = ({ onClose, reload }) => {
       if (response.ok) {
         const edificioId = await response.text();
         console.log("Edificio creado correctamente con ID", edificioId);
-        setIdEdificio({ edificioId });
-        setShowUnidadesAdd(true);
+        navigate(`/edificios/${edificioId}/agregar-unidad`);
       } else {
         console.error('Error al crear el edificio:', response.status);
       }
@@ -44,30 +42,21 @@ const EdificiosAdd = ({ onClose, reload }) => {
         <Modal.Title>Nuevo edificio</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {showUnidadesAdd ? (
-          <UnidadesAdd edificioId={idEdificio} reload={reload} onClose={() => {
-            setShowUnidadesAdd(false);
-            onClose();
-          }
-          }
-          />
-        ) : (
-          <Form onSubmit={handleAgregarEdificio}>
-            <Form.Group controlId="formDireccion">
-              <Form.Label>Dirección:</Form.Label>
-              <Form.Control
-                type="text"
-                value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
-              />
-            </Form.Group>
-            <div className="text-center mt-2">
-              <Button type="submit">
-                Agregar edificio
-              </Button>
-            </div>
-          </Form>
-        )}
+        <Form onSubmit={handleAgregarEdificio}>
+          <Form.Group controlId="formDireccion">
+            <Form.Label>Dirección:</Form.Label>
+            <Form.Control
+              type="text"
+              value={direccion}
+              onChange={(e) => setDireccion(e.target.value)}
+            />
+          </Form.Group>
+          <div className="text-center mt-2">
+            <Button type="submit">
+              Agregar edificio
+            </Button>
+          </div>
+        </Form>
       </Modal.Body>
     </Modal>
   );
