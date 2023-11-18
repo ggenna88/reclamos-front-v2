@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
-import ListaReclamo from './ListaReclamo';
-import FormularioReclamo from './FormularioReclamo';
-import './App2.css';
-import ReclamoService from '../Services/ReclamoService';
-import { AuthContext } from '../Context/AuthContext';
-import FiltrosReclamos from './FiltrosReclamos';
+import React, { useState, useEffect, useContext } from "react";
+import ListaReclamo from "./ListaReclamo";
+import FormularioReclamo from "./FormularioReclamo";
+import "./App2.css";
+import ReclamoService from "../Services/ReclamoService";
+import { AuthContext } from "../Context/AuthContext";
+import FiltrosReclamos from "./FiltrosReclamos";
+import { Navbar } from "react-bootstrap";
 
 const GestionReclamos = () => {
   const { token } = useContext(AuthContext);
@@ -17,12 +18,12 @@ const GestionReclamos = () => {
     const fetchData = async () => {
       try {
         const reclamosData = await ReclamoService({
-          tipoLlamada: 'obtenerReclamos',
+          tipoLlamada: "obtenerReclamos",
           parametros: { token },
         });
         setReclamos(reclamosData);
       } catch (error) {
-        console.error('Error al obtener reclamos:', error);
+        console.error("Error al obtener reclamos:", error);
       } finally {
         setLoading(false);
       }
@@ -33,32 +34,32 @@ const GestionReclamos = () => {
 
   const handleEdit = async (id) => {
     try {
-      console.log('Este es el ID de handleEdit',id)
+      console.log("Este es el ID de handleEdit", id);
       const reclamoDetalles = await ReclamoService({
-        tipoLlamada: 'buscarReclamoId',
+        tipoLlamada: "buscarReclamoId",
         parametros: { id, token },
       });
       setReclamoEnEdicion(reclamoDetalles);
       setShowModal(true);
     } catch (error) {
-      console.error('Error al obtener detalles del reclamo:', error);
+      console.error("Error al obtener detalles del reclamo:", error);
     }
   };
 
   const handleDelete = async (id) => {
     try {
       await ReclamoService({
-        tipoLlamada: 'deleteReclamoId',
+        tipoLlamada: "deleteReclamoId",
         parametros: { id, token },
       });
 
       const reclamosData = await ReclamoService({
-        tipoLlamada: 'obtenerReclamos',
+        tipoLlamada: "obtenerReclamos",
         parametros: { token },
       });
       setReclamos(reclamosData);
     } catch (error) {
-      console.error('Error al eliminar reclamo:', error);
+      console.error("Error al eliminar reclamo:", error);
     }
   };
 
@@ -66,21 +67,21 @@ const GestionReclamos = () => {
     try {
       if (reclamoEnEdicion) {
         await ReclamoService({
-          tipoLlamada: 'actualizarReclamo',
+          tipoLlamada: "actualizarReclamo",
           parametros: {
             token,
-            nuevoReclamo
+            nuevoReclamo,
           },
         });
       } else {
         await ReclamoService({
-          tipoLlamada: 'crearReclamo',
+          tipoLlamada: "crearReclamo",
           parametros: { token, nuevoReclamo },
         });
       }
-      console.log('Este es el reclamo en handleSubmit', nuevoReclamo)
+      console.log("Este es el reclamo en handleSubmit", nuevoReclamo);
       const reclamosData = await ReclamoService({
-        tipoLlamada: 'obtenerReclamos',
+        tipoLlamada: "obtenerReclamos",
         parametros: { token },
       });
       setReclamos(reclamosData);
@@ -88,7 +89,7 @@ const GestionReclamos = () => {
       setReclamoEnEdicion(null);
       setShowModal(false);
     } catch (error) {
-      console.error('Error al crear o actualizar reclamo:', error);
+      console.error("Error al crear o actualizar reclamo:", error);
     }
   };
 
@@ -105,23 +106,28 @@ const GestionReclamos = () => {
   const handleFilter = async (filtros) => {
     try {
       // Provide default values for the parameters to avoid sending undefined
-      const { userId = null, buildingId = null, state = null, type = null } = filtros;
-      console.log('Estos son los filtros en Gestion', filtros)
+      const {
+        userId = null,
+        buildingId = null,
+        state = null,
+        type = null,
+      } = filtros;
+      console.log("Estos son los filtros en Gestion", filtros);
 
-  
       const reclamosData = await ReclamoService({
-        tipoLlamada: 'filterReclamos',
+        tipoLlamada: "filterReclamos",
         parametros: { token, filtros },
       });
-  
+
       setReclamos(reclamosData);
     } catch (error) {
-      console.error('Error al aplicar filtros:', error);
+      console.error("Error al aplicar filtros:", error);
     }
   };
 
   return (
     <div className="gestion-reclamos">
+      <Navbar />
       <div className="main-content">
         <h2 className="titulo">Gestión de Reclamos</h2>
         <button className="btn-nuevo-reclamo" onClick={openModal}>

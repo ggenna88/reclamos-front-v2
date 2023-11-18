@@ -12,6 +12,7 @@ import UnidadesAdd from "./Components/UnidadesAdd";
 import UnidadesAll from "./Components/UnidadesAll";
 import UnidadUpdate from "./Components/UnidadUpdate";
 import UsersAdmin from "./Components/UsersAdmin/UsersAdmin";
+import GestionReclamos from "./Components/GestionReclamos";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/edificiosall" element={<EdificiosAll />} />
           <Route path="/edificiosadd" element={<EdificiosAdd />} />
           <Route path="/usersall" element={<UsersAdmin />} />
+          <Route path="/reclamos" element={<GestionReclamos />} />
           <Route
             path="/edificios-update/:id/:direccion"
             element={<EdificiosUpdate />}

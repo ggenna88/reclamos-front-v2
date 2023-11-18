@@ -6,9 +6,9 @@ export const Navbar = () => {
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
-            Reclamos
-          </a>
+          <NavLink className="nav-link" to="/GestionReclamos">
+            Usuarios
+          </NavLink>
           <button
             className="navbar-toggler"
             type="button"
