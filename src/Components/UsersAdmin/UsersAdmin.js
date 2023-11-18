@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { GetAllUsers } from "../../Services/UsersService";
+import { GetAllUsers, RemoveUser } from "../../Services/UsersService";
 import { UsersAdminRow } from "./UsersAdminRow";
 import { UsersAdminModalForm } from "./UsersAdminModalForm";
 import { Navbar } from "../NavBar";
@@ -20,10 +20,19 @@ const UsersAdmin = () => {
   };
 
   const [userSelected, setUserSelected] = useState(initialUserForm);
+  const [actionRemove, setActionRemove] = useState(false);
 
-  const handlerUserSelectedForm = (user) => {
+  const handlerUserSelectedForm = (user, remove = false) => {
+    setActionRemove(remove);
     setUserSelected({ ...user });
-    setVisibleForm(true);
+    if (!actionRemove) {
+      setVisibleForm(true);
+    } else {
+      handlerRemoveUser()
+        .then((res) => alert(res))
+        .then(setVisibleForm(false))
+        .then(setActionRemove(false));
+    }
   };
 
   useEffect(() => {
@@ -38,6 +47,15 @@ const UsersAdmin = () => {
   const handlerOpenForm = () => {
     setPassForm(true);
     setVisibleForm(true);
+  };
+
+  const handlerRemoveUser = async (user) => {
+    // eslint-disable-next-line no-restricted-globals
+    let result = confirm("Confirma la eliminacion del usuario?");
+    if (result) {
+      const res = await RemoveUser(user);
+      return res;
+    }
   };
 
   return (
@@ -62,12 +80,12 @@ const UsersAdmin = () => {
         <table className="table table-hover table-stripped ">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Nombre</th>
               <th>DNI</th>
+              <th>Nombre</th>
+              <th>Edad</th>
               <th>Tipo usuario</th>
-              <th>Email</th>
               <th>Username</th>
+              <th>Email</th>
               <th></th>
               <th></th>
               <th></th>

@@ -1,20 +1,27 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import OptionSelectDropdown from "../OptionSelectDropdown";
-import { AddUser } from "../../Services/UsersService";
+import { AddUser, RemoveUser, UpdateUser } from "../../Services/UsersService";
 import UsersAdmin from "./UsersAdmin";
 
 export const UsersAdminForm = ({
   handlerCloseForm,
   userSelected,
+  setUserSelected,
   initialUserForm,
   passForm,
   setPassForm,
 }) => {
   const handlerAddUser = async (user) => {
     const resUser = await AddUser(user);
-    resUser ? alert("Usuario creado") : alert("Usuario actualizado");
     handlerCloseForm();
+    return resUser;
+  };
+
+  const handlerUpdateUser = async (user) => {
+    const resUser = await UpdateUser(user);
+    handlerCloseForm();
+    return resUser;
   };
 
   const [userForm, setUserForm] = useState(userSelected);
@@ -39,6 +46,7 @@ export const UsersAdminForm = ({
 
   const onSubmit = (event) => {
     event.preventDefault();
+
     if (!username || (dni === 0 && !password) || !email) {
       alert("Error de validación");
       return;
@@ -46,10 +54,25 @@ export const UsersAdminForm = ({
     if (!email.includes("@")) {
       alert("Error de validación");
     }
-    handlerAddUser(userForm).then(() => {
-      return <UsersAdmin />;
-    });
-    setUserForm(initialUserForm);
+    if (userSelected.dni === null) {
+      handlerAddUser(userForm)
+        .then((res) =>
+          res ? alert("Usuario creado") : alert("No se guardaron los cambios")
+        )
+        .then(() => {
+          return <UsersAdmin />;
+        });
+    } else {
+      handlerUpdateUser(userForm)
+        .then((res) =>
+          res
+            ? alert("Usuario actualizado")
+            : alert("No se guardaron los cambios")
+        )
+        .then(() => {
+          return <UsersAdmin />;
+        });
+    }
   };
 
   const onCloseForm = () => {
@@ -94,13 +117,24 @@ export const UsersAdminForm = ({
         setUserForm={setUserForm}
         tipoPersona={tipoPersona}
       />
-      <input
-        className="form-control my-3 w-75"
-        placeholder="Username"
-        name="username"
-        value={username}
-        onChange={onInputChange}
-      />
+      {userSelected.dni === null ? (
+        <input
+          className="form-control my-3 w-75"
+          placeholder="Username"
+          name="username"
+          value={username}
+          onChange={onInputChange}
+        />
+      ) : (
+        <input
+          className="form-control my-3 w-75"
+          placeholder="Username"
+          name="username"
+          value={username}
+          disabled
+          onChange={onInputChange}
+        />
+      )}
       {passForm && (
         <input
           className="form-control my-3 w-75"
@@ -112,7 +146,7 @@ export const UsersAdminForm = ({
         />
       )}
       <button className="btn btn-primary" type="submit">
-        {dni > 1 ? "Editar" : "Crear"}
+        Guardar
       </button>
       {!handlerCloseForm || (
         <button
