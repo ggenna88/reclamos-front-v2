@@ -11,6 +11,7 @@ import EdificiosUpdate from "./Components/EdificiosUpdate";
 import UnidadesAdd from "./Components/UnidadesAdd";
 import UnidadesAll from "./Components/UnidadesAll";
 import UnidadUpdate from "./Components/UnidadUpdate";
+import UsersAdmin from "./Components/UsersAdmin/UsersAdmin";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/edificiosall" element={<EdificiosAll />} />
           <Route path="/edificiosadd" element={<EdificiosAdd />} />
+          <Route path="/usersall" element={<UsersAdmin />} />
           <Route
             path="/edificios-update/:id/:direccion"
             element={<EdificiosUpdate />}
