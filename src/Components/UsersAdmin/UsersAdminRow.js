@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 /* eslint-disable react/prop-types */
 export const UsersAdminRow = ({
@@ -11,6 +12,7 @@ export const UsersAdminRow = ({
   handlerUserSelectedForm,
   setPassForm,
 }) => {
+  const [actionRemove, setActionRemove] = useState(false);
   return (
     <tr>
       <td>{dni}</td>
@@ -35,16 +37,34 @@ export const UsersAdminRow = ({
             });
           }}
         >
-          Update
+          Modificar
         </button>
       </td>
 
       <td>
-        <button className="btn btn-danger" type="button">
+        <button
+          className="btn btn-danger"
+          type="button"
+          onClick={() => {
+            setPassForm(false);
+            setActionRemove(true);
+            handlerUserSelectedForm(
+              {
+                nombre,
+                dni,
+                edad,
+                username,
+                email,
+                tipoPersona,
+              },
+              actionRemove
+            );
+          }}
+        >
           Remove
         </button>
       </td>
-      <td>
+      {/* <td>
         <button
           className="btn btn-secondary"
           type="button"
@@ -62,7 +82,7 @@ export const UsersAdminRow = ({
         >
           Password
         </button>
-      </td>
+      </td> */}
     </tr>
   );
 };

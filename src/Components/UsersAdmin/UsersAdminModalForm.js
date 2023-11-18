@@ -9,6 +9,7 @@ export const UsersAdminModalForm = ({
   setUserSelected,
   passForm,
   setPassForm,
+  actionRemove,
 }) => {
   const handlerCloseForm = () => {
     setVisibleForm(false);
@@ -28,16 +29,18 @@ export const UsersAdminModalForm = ({
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">
-                {userSelected.id > 1 ? "Editar" : "Crear"}
+                {userSelected.dni !== null ? "Modificar" : "Crear"}
               </h5>
             </div>
             <div className="modal-body">
               <UsersAdminForm
                 userSelected={userSelected}
+                setUserSelected={setUserSelected}
                 initialUserForm={initialUserForm}
                 handlerCloseForm={handlerCloseForm}
                 passForm={passForm}
                 setPassForm={setPassForm}
+                actionRemove={actionRemove}
               />
             </div>
           </div>
