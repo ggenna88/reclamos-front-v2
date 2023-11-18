@@ -20,26 +20,29 @@ function Login() {
 
   const handleLogin = async (username, password) => {
     try {
-      //console.log('entra')
       const token = await LoginService(username, password);
-      console.log(token)
+      console.log(token);
       if (token) {
-        // Update the token in your app's state or context
-        const permiso = 'Administrador';
-        updateToken(token, permiso);
+        const [, payload] = token.split(".");
+        const decodedPayload = JSON.parse(atob(payload));
+        // Acceder al claim "rol" en la carga útil
+        const permiso = decodedPayload.role[0].authority;
+        const usuario = decodedPayload.sub;
+        updateToken(token, permiso, usuario);
         console.log("Login successful, token:", token);
         console.log("Login successful, permiso:", permiso);
-  
+        console.log("Login successful, usuario:", usuario);
+
         // Navigate to the "/usersall" route
         navigate("/usersall");
       } else {
         // Handle the case where the token is not received (show an error message, etc.)
-        throw new Error('Token not received');
+        throw new Error("Token not received");
       }
     } catch (error) {
       // Handle errors from LoginService or other parts of the login process
-      console.error('Login error:', error);
-  
+      console.error("Login error:", error);
+
       Swal.fire(
         "Error de validacion",
         "Username o password incorrecto",
@@ -47,12 +50,12 @@ function Login() {
       );
     }
   };
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     await handleLogin(username, password);
   };
-  
+
   return (
     <div className="modal" tabIndex="-1" style={{ display: "block" }}>
       <div className="modal-dialog">
