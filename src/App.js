@@ -13,6 +13,8 @@ import UnidadesAll from "./Components/UnidadesAll";
 import UnidadUpdate from "./Components/UnidadUpdate";
 import UsersAdmin from "./Components/UsersAdmin/UsersAdmin";
 import GestionReclamos from "./Components/GestionReclamos";
+import UsersAdminAddUnidad from "./Components/UsersAdmin/UsersAdminAddUnidad";
+import UsersAdminAddUnidades from "./Components/UsersAdmin/UsersAdminAddUnidades";
 
 function App() {
   return (
@@ -23,6 +25,11 @@ function App() {
           <Route path="/edificiosall" element={<EdificiosAll />} />
           <Route path="/edificiosadd" element={<EdificiosAdd />} />
           <Route path="/usersall" element={<UsersAdmin />} />
+          <Route path="/usersaddunidad" element={<UsersAdminAddUnidad />} />
+          <Route
+            path="/usersaddunidades/:id/:direccion"
+            element={<UsersAdminAddUnidades />}
+          />
           <Route path="/reclamos" element={<GestionReclamos />} />
           <Route
             path="/edificios-update/:id/:direccion"

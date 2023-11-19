@@ -112,7 +112,7 @@ export const UsersAdminForm = ({
         onChange={onInputChange}
       />
       <OptionSelectDropdown
-        listOption={["Administrador", "Inquilino"]}
+        listOption={["Administrador", "Inquilino", "Propietario"]}
         userForm={userForm}
         setUserForm={setUserForm}
         tipoPersona={tipoPersona}

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /* eslint-disable react/prop-types */
 export const UsersAdminRow = ({
@@ -11,10 +11,24 @@ export const UsersAdminRow = ({
   tipoPersona,
   handlerUserSelectedForm,
   setPassForm,
+  index,
+  selectedRow,
+  handleRowClick,
 }) => {
-  const [actionRemove, setActionRemove] = useState(false);
   return (
-    <tr>
+    <tr
+      key={index}
+      onClick={() => {
+        const table = document.getElementById("users-table");
+        const rows = table.getElementsByTagName("tr");
+        const username =
+          rows[index + 1].getElementsByTagName("td")[4].innerHTML;
+        const tipoPersona =
+          rows[index + 1].getElementsByTagName("td")[3].innerHTML;
+        handleRowClick(index, username, tipoPersona);
+      }}
+      className={selectedRow === index ? "table-success" : ""}
+    >
       <td>{dni}</td>
       <td>{nombre}</td>
       <td>{edad}</td>
@@ -47,7 +61,6 @@ export const UsersAdminRow = ({
           type="button"
           onClick={() => {
             setPassForm(false);
-            setActionRemove(true);
             handlerUserSelectedForm(
               {
                 nombre,
@@ -57,32 +70,13 @@ export const UsersAdminRow = ({
                 email,
                 tipoPersona,
               },
-              actionRemove
+              true
             );
           }}
         >
           Remove
         </button>
       </td>
-      {/* <td>
-        <button
-          className="btn btn-secondary"
-          type="button"
-          onClick={() => {
-            setPassForm(true);
-            handlerUserSelectedForm({
-              nombre,
-              dni,
-              edad,
-              username,
-              email,
-              tipoPersona,
-            });
-          }}
-        >
-          Password
-        </button>
-      </td> */}
     </tr>
   );
 };
