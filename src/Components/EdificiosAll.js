@@ -8,6 +8,7 @@ import EdificiosAdd from './EdificiosAdd';
 import Boton from './Boton';
 import { Navbar } from './NavBar';
 import EdificiosUpdate from './EdificiosUpdate';
+import EdificiosSearch from './EdificiosSearch';
 
 const EdificiosAll = () => {
     const { token } = useContext(AuthContext);
@@ -16,6 +17,8 @@ const EdificiosAll = () => {
     const [showUnidadesAddModal, setShowUnidadesAddModal] = useState(false);
     const [showEdificioUpdateModal, setshowEdificioUpdateModal] = useState({});
     const [idEdificio, setIdEdificio] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
     const fetchEdif = async () => {
         try {
@@ -67,45 +70,60 @@ const EdificiosAll = () => {
         handleReload();
     };
 
-    const renderTabla = () => {
-        return (
-            <table className="table table-hover tabla-edificiosall" style={{ borderCollapse: 'collapse', width: '100%' }}>
-                <thead>
-                    <tr>
-                        <th style={cellStyle}>Dirección</th>
-                        <th style={cellStyle}></th>
-                        <th style={cellStyle}></th>
-                        <th style={cellStyle}></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {edif.map((edificio) => (
-                        <tr key={edificio.direccion}>
-                            <td style={{ ...cellStyle, textAlign: 'center' }}>{edificio.direccion}</td>
-                            <td style={{ ...cellStyle, textAlign: 'center' }}>
-                                <EdificioVerButton id={edificio.id} direccion={edificio.direccion} />
-                            </td>
-                            <td style={{ ...cellStyle, textAlign: 'center' }}>
-                                <Boton label="Modificar edificio" onClick={() => openUpdateModal(edificio.id)} />
-                                {showEdificioUpdateModal[edificio.id] && (
-                                    <EdificiosUpdate
-                                        id={edificio.id}
-                                        direccion={edificio.direccion}
-                                        onClose={() => closeUpdateModal(edificio.id)}
-                                    />
-                                )}
-                            </td>
-                            <td style={{ ...cellStyle, textAlign: 'center' }}>
-                                <EdificioEliminarButton
-                                    direccion={edificio.direccion}
-                                    onDeleteSuccess={handleReload}
-                                />
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+        const filteredResults = edif.filter((edificio) =>
+            edificio.direccion.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-                            </td>
+        setSearchResults(filteredResults);
+    };
+
+    const renderTabla = () => {
+        const dataToRender = searchTerm ? searchResults : edif;
+        return (
+            <div>
+                <div className="container d-flex flex-column align-items-center justify-content-center p-4">
+                    <EdificiosSearch onSearch={handleSearch} />
+                </div>
+                <table className="table table-hover tabla-edificiosall" style={{ borderCollapse: 'collapse', width: '100%' }}>
+                    <thead>
+                        <tr>
+                            <th style={cellStyle}>Dirección</th>
+                            <th style={cellStyle}></th>
+                            <th style={cellStyle}></th>
+                            <th style={cellStyle}></th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {dataToRender.map((edificio) => (
+                            <tr key={edificio.direccion}>
+                                <td style={{ ...cellStyle, textAlign: 'center' }}>{edificio.direccion}</td>
+                                <td style={{ ...cellStyle, textAlign: 'center' }}>
+                                    <EdificioVerButton id={edificio.id} direccion={edificio.direccion} />
+                                </td>
+                                <td style={{ ...cellStyle, textAlign: 'center' }}>
+                                    <Boton label="Modificar edificio" onClick={() => openUpdateModal(edificio.id)} />
+                                    {showEdificioUpdateModal[edificio.id] && (
+                                        <EdificiosUpdate
+                                            id={edificio.id}
+                                            direccion={edificio.direccion}
+                                            onClose={() => closeUpdateModal(edificio.id)}
+                                        />
+                                    )}
+                                </td>
+                                <td style={{ ...cellStyle, textAlign: 'center' }}>
+                                    <EdificioEliminarButton
+                                        direccion={edificio.direccion}
+                                        onDeleteSuccess={handleReload}
+                                    />
+
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         );
 
 
@@ -114,9 +132,8 @@ const EdificiosAll = () => {
 
     const renderVacio = () => {
         return (
-            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-secondary p-4">
                 <h2>No hay edificios para mostrar</h2>
-
             </div>
         );
 
@@ -127,11 +144,11 @@ const EdificiosAll = () => {
     return (
         <div className="container">
             <Navbar />
-            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-secondary p-4">
                 <h1>Gestión de edificios</h1>
                 {edif.length === 0 ? renderVacio() : renderTabla()}
                 <div>
-                    <Boton label="Agregar edificio" onClick={openModal} />
+                    <Boton color="btn-warning" label="Agregar edificio" onClick={openModal} />
                     {showEdificioAddModal && (
                         <EdificiosAdd
                             onSubmit={(newIdEdificio) => {

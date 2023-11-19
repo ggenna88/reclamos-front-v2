@@ -9,7 +9,7 @@ const BackButton = () => {
     navigate(-1);
   };
 
-  return <Boton label="Volver" onClick={handleBackClick} />;
+  return <Boton color="btn-success" label="Volver" onClick={handleBackClick} />;
 };
 
 export default BackButton;

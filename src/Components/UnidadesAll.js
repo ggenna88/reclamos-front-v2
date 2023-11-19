@@ -7,6 +7,7 @@ import UnidadesDelButton from './UnidadesDel';
 import UnidadesAdd from './UnidadesAdd';
 import Boton from './Boton';
 import UnidadUpdate from './UnidadUpdate';
+import { Navbar } from './NavBar';
 
 const UnidadesAll = () => {
     const { id, direccion } = useParams();
@@ -84,7 +85,7 @@ const UnidadesAll = () => {
                                 <UnidadPersonasButton nro={uni.nro} piso={uni.piso} personas={uni.personas} />
                             </td>
                             <td style={{ ...cellStyle, textAlign: 'center' }}>
-                            <Boton label="Modificar unidad" onClick={() => openUpdateModal(uni.id)} />
+                                <Boton label="Modificar unidad" onClick={() => openUpdateModal(uni.id)} />
                                 {showUnidadUpdateModal[uni.id] && (
                                     <UnidadUpdate
                                         id={uni.id}
@@ -109,7 +110,7 @@ const UnidadesAll = () => {
 
     const renderVacio = () => {
         return (
-            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-secondary p-4">
                 <h2>No hay unidades para mostrar</h2>
 
             </div>
@@ -118,22 +119,25 @@ const UnidadesAll = () => {
     }
 
     return (
-        <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
-            <h1>Lista de unidades del edificio {direccion}</h1>
-            {unidad.length === 0 ? renderVacio() : renderTabla()}
-            <div>
-                <Boton label="Agregar Unidades" onClick={openModal} />
-                {showUnidadesAddModal && (
-                    <UnidadesAdd
-                        edificioId={id}
-                        onClose={closeModal}
-                        reload={handleReload}
-                    />
-                )}
+        <div className="container">
+            <Navbar />
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-secondary p-4">
+                <h1>Lista de unidades del edificio {direccion}</h1>
+                {unidad.length === 0 ? renderVacio() : renderTabla()}
+                <div>
+                    <Boton color="btn-warning" label="Agregar Unidades" onClick={openModal} />
+                    {showUnidadesAddModal && (
+                        <UnidadesAdd
+                            edificioId={id}
+                            onClose={closeModal}
+                            reload={handleReload}
+                        />
+                    )}
 
-            </div>
-            <div className='text-center mt-3'>
-                <BackButton />
+                </div>
+                <div className='text-center mt-3'>
+                    <BackButton />
+                </div>
             </div>
         </div>
     );
