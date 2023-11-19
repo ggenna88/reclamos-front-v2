@@ -3,7 +3,6 @@
 
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import fetchData from './FetchUtil';
 import { Modal } from 'react-bootstrap';
 
@@ -48,7 +47,7 @@ const UnidadesAdd = ({ edificioId, onClose, reload }) => {
         token
       );
 
-      console.log("Unidad creada con éxito", unidad);
+      console.log("Unidad creada con éxito");
       setNumero('');
       setPiso('');
       setEstado('Inhabitada');

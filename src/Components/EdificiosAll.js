@@ -2,18 +2,19 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import EdificioEliminarButton from './EdificiosDel';
-import EdificioModificarButton from './EdificioModificarButton';
 import EdificioVerButton from './EdificioVerButton';
 import BackButton from './BackButton';
 import EdificiosAdd from './EdificiosAdd';
 import Boton from './Boton';
 import { Navbar } from './NavBar';
+import EdificiosUpdate from './EdificiosUpdate';
 
 const EdificiosAll = () => {
     const { token } = useContext(AuthContext);
     const [edif, setEdif] = useState([]);
     const [showEdificioAddModal, setShowEdificioAddModal] = useState(false);
     const [showUnidadesAddModal, setShowUnidadesAddModal] = useState(false);
+    const [showEdificioUpdateModal, setshowEdificioUpdateModal] = useState({});
     const [idEdificio, setIdEdificio] = useState(null);
 
     const fetchEdif = async () => {
@@ -51,10 +52,19 @@ const EdificiosAll = () => {
         setShowEdificioAddModal(true);
     };
 
+    const openUpdateModal = (id) => {
+        setshowEdificioUpdateModal((prev) => ({ ...prev, [id]: true }));
+    };
+
     const closeModal = () => {
         setShowEdificioAddModal(false);
         setShowUnidadesAddModal(false);
         setIdEdificio(null);
+    };
+
+    const closeUpdateModal = (id) => {
+        setshowEdificioUpdateModal((prev) => ({ ...prev, [id]: false }));
+        handleReload();
     };
 
     const renderTabla = () => {
@@ -76,7 +86,14 @@ const EdificiosAll = () => {
                                 <EdificioVerButton id={edificio.id} direccion={edificio.direccion} />
                             </td>
                             <td style={{ ...cellStyle, textAlign: 'center' }}>
-                                <EdificioModificarButton id={edificio.id} direccion={edificio.direccion} />
+                                <Boton label="Modificar edificio" onClick={() => openUpdateModal(edificio.id)} />
+                                {showEdificioUpdateModal[edificio.id] && (
+                                    <EdificiosUpdate
+                                        id={edificio.id}
+                                        direccion={edificio.direccion}
+                                        onClose={() => closeUpdateModal(edificio.id)}
+                                    />
+                                )}
                             </td>
                             <td style={{ ...cellStyle, textAlign: 'center' }}>
                                 <EdificioEliminarButton
