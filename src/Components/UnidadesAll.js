@@ -5,12 +5,14 @@ import { useParams } from 'react-router-dom';
 import UnidadUpdateButton from './UnidadUpdateButton';
 import BackButton from './BackButton';
 import UnidadesDelButton from './UnidadesDel';
-import UnidadesAddButton from './UnidadesAddButton';
+import UnidadesAdd from './UnidadesAdd';
+import Boton from './Boton';
 
 const UnidadesAll = () => {
     const { id, direccion } = useParams();
     const { token } = useContext(AuthContext);
     const [unidad, setUnidad] = useState([]);
+    const [showUnidadesAddModal, setShowUnidadesAddModal] = useState(false);
 
     const fetchUnidad = async () => {
         try {
@@ -40,6 +42,18 @@ const UnidadesAll = () => {
 
     const handleEliminarSuccess = () => {
         fetchUnidad(id);
+    };
+
+    const openModal = () => {
+        setShowUnidadesAddModal(true);
+    };
+
+    const closeModal = () => {
+        setShowUnidadesAddModal(false);
+    };
+
+    const handleReload = () => {
+        fetchUnidad();
     };
 
     const renderTabla = () => {
@@ -95,8 +109,16 @@ const UnidadesAll = () => {
         <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
             <h1>Lista de unidades del edificio {direccion}</h1>
             {unidad.length === 0 ? renderVacio() : renderTabla()}
-            <div className='text-center mt-3'>
-                <UnidadesAddButton edificioId={id} />
+            <div>
+                <Boton label="Agregar Unidades" onClick={openModal} />
+                {showUnidadesAddModal && (
+                    <UnidadesAdd
+                        edificioId={id}
+                        onClose={closeModal}
+                        reload={handleReload}
+                    />
+                )}
+
             </div>
             <div className='text-center mt-3'>
                 <BackButton />

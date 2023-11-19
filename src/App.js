@@ -2,7 +2,6 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./Components/Login";
 import { AuthProvider } from "./Context/AuthContext";
-import AdminEdificios from "./Components/AdminEdificios";
 import EdificiosAll from "./Components/EdificiosAll";
 import EdificiosAdd from "./Components/EdificiosAdd";
 import NotFound from "./Components/NotFound";
@@ -32,7 +31,6 @@ function App() {
             path="/edificios/:edificioId/agregar-unidad"
             element={<UnidadesAdd />}
           />
-          <Route path="/admin-edificio" element={<AdminEdificios />} />
           <Route
             path="/detalle-unidades/:id/:direccion"
             element={<UnidadesAll />}

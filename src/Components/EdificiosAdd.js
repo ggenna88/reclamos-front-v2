@@ -27,7 +27,7 @@ const EdificiosAdd = ({ onClose, reload }) => {
       if (response.ok) {
         const edificioId = await response.text();
         console.log("Edificio creado correctamente con ID", edificioId);
-        setIdEdificio({ edificioId });
+        setIdEdificio(edificioId);
         setShowUnidadesAdd(true);
       } else {
         console.error('Error al crear el edificio:', response.status);

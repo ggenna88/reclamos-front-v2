@@ -7,6 +7,7 @@ import EdificioVerButton from './EdificioVerButton';
 import BackButton from './BackButton';
 import EdificiosAdd from './EdificiosAdd';
 import Boton from './Boton';
+import { Navbar } from './NavBar';
 
 const EdificiosAll = () => {
     const { token } = useContext(AuthContext);
@@ -107,22 +108,25 @@ const EdificiosAll = () => {
 
 
     return (
-        <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
-            <h1>Gestión de edificios</h1>
-            {edif.length === 0 ? renderVacio() : renderTabla()}
-            <div>
-                <Boton label="Agregar edificio" onClick={openModal} />
-                {showEdificioAddModal && (
-                    <EdificiosAdd
-                        onSubmit={(newIdEdificio) => {
-                            setIdEdificio(newIdEdificio);
-                        }}
-                        onClose={closeModal}
-                        reload={handleReload}
-                    />
-                )}
+        <div className="container">
+            <Navbar />
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
+                <h1>Gestión de edificios</h1>
+                {edif.length === 0 ? renderVacio() : renderTabla()}
+                <div>
+                    <Boton label="Agregar edificio" onClick={openModal} />
+                    {showEdificioAddModal && (
+                        <EdificiosAdd
+                            onSubmit={(newIdEdificio) => {
+                                setIdEdificio(newIdEdificio);
+                            }}
+                            onClose={closeModal}
+                            reload={handleReload}
+                        />
+                    )}
+                </div>
+                <BackButton />
             </div>
-            <BackButton />
         </div>
     );
 };

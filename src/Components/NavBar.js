@@ -28,7 +28,7 @@ export const Navbar = () => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/admin-edificio">
+                <NavLink className="nav-link" to="/edificiosall">
                   Edificios
                 </NavLink>
               </li>
