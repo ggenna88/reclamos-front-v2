@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const EdificiosUpdate = ({ id, direccion, onClose }) => {
   const { token } = useContext(AuthContext);
@@ -11,7 +12,14 @@ const EdificiosUpdate = ({ id, direccion, onClose }) => {
   };
 
   const handleModificarEdificio = async () => {
-    console.log("id de edificio", id)
+    if (!newdireccion) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, completar los campos',
+      });
+      return;
+    }
     try {
       const response = await fetch(`http://localhost:8080/edificios/update/${id}`, {
         method: 'PUT',
@@ -19,7 +27,7 @@ const EdificiosUpdate = ({ id, direccion, onClose }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ direccion: newdireccion }), 
+        body: JSON.stringify({ direccion: newdireccion }),
       });
 
       if (response.ok) {
@@ -39,7 +47,7 @@ const EdificiosUpdate = ({ id, direccion, onClose }) => {
   return (
     <Modal show={true} onHide={onClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Modificar edificio {direccion }</Modal.Title>
+        <Modal.Title>Modificar edificio {direccion}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form>

@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const UnidadUpdate = ({id, onClose}) => {
   const { token } = useContext(AuthContext);
@@ -10,7 +11,14 @@ const UnidadUpdate = ({id, onClose}) => {
 
 
   const handleModificarUnidad = async () => {
-    console.log("id: dasda", id)
+    if (!numero || !piso) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, completar los campos',
+      });
+      return;
+    }
     try {
       const response = await fetch(`http://localhost:8080/unidades/update/${id}`, {
         method: 'PUT',

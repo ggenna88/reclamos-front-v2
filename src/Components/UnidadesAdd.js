@@ -5,6 +5,7 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import fetchData from './FetchUtil';
 import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const UnidadesAdd = ({ edificioId, onClose, reload }) => {
   const { token } = useContext(AuthContext);
@@ -12,7 +13,15 @@ const UnidadesAdd = ({ edificioId, onClose, reload }) => {
   const [piso, setPiso] = useState('');
   const [estado, setEstado] = useState('Inhabitada');
 
-  const handleGuardarYContinuar = async () => {
+  const handleGuardar = async (continuar) => {
+    if (!numero || !piso) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, completar los campos',
+      });
+      return;
+    }
     if (typeof edificioId === 'object') {
       edificioId = edificioId.edificioId;
     }
@@ -25,17 +34,31 @@ const UnidadesAdd = ({ edificioId, onClose, reload }) => {
       );
 
       console.log("Unidad creada con éxito");
-      setNumero('');
-      setPiso('');
-      setEstado('Inhabitada');
+
 
     } catch (error) {
       console.error('Error:', error);
+    }
+    if (continuar){
+      setNumero('');
+      setPiso('');
+      setEstado('Inhabitada');
+    } else {
+      onClose();
+      reload();
     }
   };
 
 
   const handleGuardarYFinalizar = async () => {
+        if (!numero || !piso) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, completar los campos',
+      });
+      return;
+    }
     if (typeof edificioId === 'object') {
       edificioId = edificioId.edificioId;
     }
@@ -75,6 +98,13 @@ const UnidadesAdd = ({ edificioId, onClose, reload }) => {
           className="form-control"
           id="numero"
           value={numero}
+          required
+          onInvalid={(e) =>         Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: "Por favor, ingresar número",
+          })
+        }
           onChange={(e) => setNumero(e.target.value)}
         />
       </div>
@@ -105,10 +135,10 @@ const UnidadesAdd = ({ edificioId, onClose, reload }) => {
           <option value="HabitadaPorDuenio">Habitada por dueño</option>
         </select>
       </div>
-      <button type="button" className="btn btn-primary me-2" onClick={handleGuardarYContinuar}>
+      <button type="button" className="btn btn-primary me-2" onClick={() => handleGuardar(true)}>
         Guardar y Continuar
       </button>
-      <button type="button" className="btn btn-primary" onClick={handleGuardarYFinalizar}>
+      <button type="button" className="btn btn-primary" onClick={() => handleGuardar(false)}>
         Guardar y Finalizar
       </button>
     </form>

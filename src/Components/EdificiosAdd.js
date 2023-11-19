@@ -66,6 +66,13 @@ const EdificiosAdd = ({ onClose, reload }) => {
               <Form.Control
                 type="text"
                 value={direccion}
+                required
+                onInvalid={(e) =>         Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: "Por favor, ingresar dirección",
+                })
+              }
                 onChange={(e) => setDireccion(e.target.value)}
               />
             </Form.Group>
