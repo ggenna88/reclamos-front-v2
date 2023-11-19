@@ -1,11 +1,8 @@
-// ListaReclamo.js
 import React, { useState, useEffect } from 'react';
 import ReclamoCard from './ReclamoCard';
 
 const ListaReclamo = ({ reclamos, onEdit, onDelete }) => {
- 
-
-  // Divide los reclamos en grupos de 2 para asegurarse de que haya 2 elementos por fila
+  // Agrupa los reclamos en filas de a 2
   const reclamosPorFila = reclamos.reduce((fila, reclamo, index) => {
     if (index % 2 === 0) {
       fila.push([reclamo]);
@@ -15,18 +12,26 @@ const ListaReclamo = ({ reclamos, onEdit, onDelete }) => {
     return fila;
   }, []);
 
+  // Si hay una sola tarjeta en la última fila, agrégale una tarjeta vacía para centrarla
+  const ultimaFila = reclamosPorFila[reclamosPorFila.length - 1];
+  if (ultimaFila.length === 1) {
+    ultimaFila.push(null);
+  }
+
   return (
     <div className="container">
       {reclamosPorFila.map((fila, index) => (
         <div key={index} className="row justify-content-center mb-3">
-          {fila.map((reclamo) => (
-            <div key={reclamo.id} className="col-md-4">
-              <ReclamoCard
-                reclamo={reclamo}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                className="card mx-auto"
-              />
+          {fila.map((reclamo, colIndex) => (
+            <div key={colIndex} className="col-md-4">
+              {reclamo && (
+                <ReclamoCard
+                  reclamo={reclamo}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  className="card mx-auto"
+                />
+              )}
             </div>
           ))}
         </div>

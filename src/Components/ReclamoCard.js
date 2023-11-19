@@ -1,33 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
+import ReclamoService from '../Services/ReclamoService';
+import { AuthContext } from '../Context/AuthContext';
+
+// Imagen por defecto
+const defaultImage = 'https://via.placeholder.com/250x200.png?text=Sin+Foto';
 
 function ReclamoCard({ reclamo, onEdit, onDelete }) {
+  const [imagenesReclamo, setImagenesReclamo] = useState([]);
+  const { token } = useContext(AuthContext);
+
+  useEffect(() => {
+    const obtenerImagenesReclamo = async () => {
+      try {
+        const response = await ReclamoService({
+          tipoLlamada: 'findImagesByReclamoId',
+          parametros: { token: token, id: reclamo.reclamo_id },
+        });
+
+        if (response) {
+          setImagenesReclamo(response);
+        }
+      } catch (error) {
+        console.error('Error al obtener imágenes del reclamo:', error);
+      }
+    };
+
+    obtenerImagenesReclamo();
+  }, [reclamo.reclamo_id, token]);
+
   const handleEditClick = () => {
     // Llama a la función de edición pasada como prop
-    console.log('Este es el reclamoID',reclamo.reclamo_id)
+    console.log('Este es el reclamoID', reclamo.reclamo_id);
     onEdit(reclamo.reclamo_id);
   };
 
   const handleDeleteClick = () => {
     // Llama a la función de eliminación pasada como prop
-    console.log('Este es el reclamoID',reclamo.reclamo_id)
+    console.log('Este es el reclamoID', reclamo.reclamo_id);
     onDelete(reclamo.reclamo_id);
   };
 
   return (
     <Card style={{ width: '18rem' }}>
-      <Carousel>
-        {reclamo.imagenes && reclamo.imagenes.length > 0 && reclamo.imagenes.map((imagen, index) => (
-          <Carousel.Item key={index}>
+      <Carousel style={{ maxHeight: '200px', overflow: 'hidden' }}>
+        {imagenesReclamo && imagenesReclamo.length > 0 ? (
+          imagenesReclamo.map((imagen, index) => (
+            <Carousel.Item key={index}>
+              <img
+                className="d-block w-100"
+                src={`data:image/jpeg;base64,${imagen.datosImagen}`}
+                alt={`Imagen ${index + 1}`}
+                style={{ objectFit: 'cover', height: '200px' }}
+              />
+            </Carousel.Item>
+          ))
+        ) : (
+          <Carousel.Item>
             <img
               className="d-block w-100"
-              src={`data:image/jpeg;base64,${imagen.datosImagen}`} // Asegúrate de que el formato de la imagen sea correcto
-              alt={`Imagen ${index + 1}`}
+              src={defaultImage}
+              alt="Sin Foto"
+              style={{ objectFit: 'cover', height: '200px' }}
             />
           </Carousel.Item>
-        ))}
+        )}
       </Carousel>
       <Card.Body>
         <Card.Title>{reclamo.titulo}</Card.Title>

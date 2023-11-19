@@ -20,7 +20,7 @@ const GestionReclamos = () => {
           tipoLlamada: 'obtenerReclamos',
           parametros: { token },
         });
-        setReclamos(reclamosData);
+        setReclamos(reclamosData || []); // Asegurarse de manejar el caso nulo
       } catch (error) {
         console.error('Error al obtener reclamos:', error);
       } finally {
@@ -33,7 +33,7 @@ const GestionReclamos = () => {
 
   const handleEdit = async (id) => {
     try {
-      console.log('Este es el ID de handleEdit',id)
+      console.log('Este es el ID de handleEdit', id);
       const reclamoDetalles = await ReclamoService({
         tipoLlamada: 'buscarReclamoId',
         parametros: { id, token },
@@ -69,7 +69,7 @@ const GestionReclamos = () => {
           tipoLlamada: 'actualizarReclamo',
           parametros: {
             token,
-            nuevoReclamo
+            nuevoReclamo,
           },
         });
       } else {
@@ -78,7 +78,7 @@ const GestionReclamos = () => {
           parametros: { token, nuevoReclamo },
         });
       }
-      console.log('Este es el reclamo en handleSubmit', nuevoReclamo)
+      console.log('Este es el reclamo en handleSubmit', nuevoReclamo);
       const reclamosData = await ReclamoService({
         tipoLlamada: 'obtenerReclamos',
         parametros: { token },
@@ -106,17 +106,33 @@ const GestionReclamos = () => {
     try {
       // Provide default values for the parameters to avoid sending undefined
       const { userId = null, buildingId = null, state = null, type = null } = filtros;
-      console.log('Estos son los filtros en Gestion', filtros)
+      console.log('Estos son los filtros en Gestion', filtros);
 
-  
       const reclamosData = await ReclamoService({
         tipoLlamada: 'filterReclamos',
         parametros: { token, filtros },
       });
-  
-      setReclamos(reclamosData);
+      if (reclamosData) {
+        setReclamos(reclamosData);
+      } else {
+        console.log('No se encontraron reclamos.');
+        setReclamos([]);
+      }
     } catch (error) {
       console.error('Error al aplicar filtros:', error);
+    }
+  };
+
+  const handleClearFilters = async () => {
+    try {
+      // Limpiar los filtros y obtener todos los reclamos de nuevo
+      const reclamosData = await ReclamoService({
+        tipoLlamada: 'obtenerReclamos',
+        parametros: { token },
+      });
+      setReclamos(reclamosData || []);
+    } catch (error) {
+      console.error('Error al limpiar filtros:', error);
     }
   };
 
@@ -124,9 +140,11 @@ const GestionReclamos = () => {
     <div className="gestion-reclamos">
       <div className="main-content">
         <h2 className="titulo">Gestión de Reclamos</h2>
-        <button className="btn-nuevo-reclamo" onClick={openModal}>
-          Nuevo Reclamo
-        </button>
+        <div className="btn-nuevo-reclamo-container">
+          <button className="btn-nuevo-reclamo" onClick={openModal}>
+            Nuevo Reclamo
+          </button>
+        </div>
         {showModal && (
           <FormularioReclamo
             onSubmit={handleSubmit}
@@ -136,16 +154,22 @@ const GestionReclamos = () => {
         )}
         <div className="grid-container">
           <div className="filtros-container">
-            <FiltrosReclamos onFilter={handleFilter} />
+            <FiltrosReclamos onFilter={handleFilter} onClearFilters={handleClearFilters} />
           </div>
           {loading ? (
             <div className="lista-reclamos-container">Cargando reclamos...</div>
           ) : (
-            <ListaReclamo
-              reclamos={reclamos}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <>
+              {reclamos.length > 0 ? (
+                <ListaReclamo
+                  reclamos={reclamos}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ) : (
+                <div className="lista-reclamos-container">No existen reclamos.</div>
+              )}
+            </>
           )}
         </div>
       </div>

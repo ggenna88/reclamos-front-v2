@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Row, Col, Dropdown } from 'react-bootstrap';
 
-const FiltrosReclamos = ({ onFilter }) => {
+const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
   const [filtroEdificioId, setFiltroEdificioId] = useState('');
   const [filtroUserId, setFiltroUserId] = useState('');
   const [filtroTipoReclamo, setFiltroTipoReclamo] = useState('');
@@ -13,7 +13,7 @@ const FiltrosReclamos = ({ onFilter }) => {
     const buildingIdValue = filtroEdificioId !== '' ? filtroEdificioId : null;
     const tipoReclamoValue = filtroTipoReclamo || null;
     const estadoReclamoValue = filtroEstadoReclamo || null;
-  
+
     // Enviar los filtros al componente padre
     onFilter({
       userId: userIdValue,
@@ -23,12 +23,21 @@ const FiltrosReclamos = ({ onFilter }) => {
     });
   };
 
+  const handleClear = () => {
+    setFiltroEdificioId('');
+    setFiltroUserId('');
+    setFiltroTipoReclamo('');
+    setFiltroEstadoReclamo('');
+
+    // Llamar a la función para limpiar los filtros
+    onClearFilters();
+  };
+
   return (
     <Form>
       <Row>
-
         <Col>
-        <Form.Group controlId="formTipoReclamo">
+          <Form.Group controlId="formTipoReclamo">
             <Form.Label>Tipo de Reclamo:</Form.Label>
             <Dropdown>
               <Dropdown.Toggle variant="light" id="dropdown-tipo-reclamo">
@@ -44,8 +53,8 @@ const FiltrosReclamos = ({ onFilter }) => {
 
         <Col>
           <Form.Group controlId="filtroTipoReclamo">
-          <Form.Label>Estado de Reclamo:</Form.Label>
-          <Dropdown>
+            <Form.Label>Estado de Reclamo:</Form.Label>
+            <Dropdown>
               <Dropdown.Toggle variant="light" id="dropdown-tipo-reclamo">
                 {filtroEstadoReclamo || 'Selecciona un tipo'}
               </Dropdown.Toggle>
@@ -84,6 +93,12 @@ const FiltrosReclamos = ({ onFilter }) => {
         <Col>
           <Button variant="primary" onClick={handleFilter}>
             Filtrar
+          </Button>
+        </Col>
+
+        <Col>
+          <Button variant="secondary" onClick={handleClear}>
+            Limpiar Filtros
           </Button>
         </Col>
       </Row>

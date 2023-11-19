@@ -63,16 +63,19 @@ body {
   color: #555;
 }
 
-/* Estilos para los filtros de reclamos */
 .filtros-container {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  flex-direction: column; /* Cambiado el diseño de fila a columna */
+  align-items: center; /* Centrar los elementos horizontalmente */
+  margin-bottom: 20px; /* Aumentado el margen inferior */
 }
 
 /* Estilos para el formulario de filtros */
 .form-group {
   margin-bottom: 15px;
+  display: flex;
+  flex-direction: column; /* Cambiado el diseño de fila a columna */
+  align-items: center; /* Centrar los elementos horizontalmente */
 }
 
 /* Estilos para los botones de filtros */
@@ -82,6 +85,7 @@ body {
   border: none;
   cursor: pointer;
   border-radius: 4px;
+  margin-top: 30px; /* Ajusta según sea necesario */
 }
 
 /* Estilos para las tarjetas de reclamos */
@@ -125,11 +129,34 @@ body {
   border-radius: 4px;
 }
 
+
 /* Estilos para el grid layout */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajustado el tamaño máximo y mínimo */
+  grid-template-columns: 1fr; /* Cambiado el diseño de columnas a una sola columna */
   gap: 20px;
+  justify-items: center; /* Centrar los elementos horizontalmente */
+}
+
+.scrollable-list {
+  max-height: 400px; /* Altura máxima para la lista de reclamos */
+  overflow-y: auto; /* Agrega una barra de desplazamiento vertical si es necesario */
+}
+
+/* Estilos para el botón "Nuevo Reclamo" */
+.btn-nuevo-reclamo-container {
+  text-align: center;
+  margin-bottom: 20px; /* Ajusta según sea necesario */
+}
+
+.btn-nuevo-reclamo {
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px; /* Ajusta según sea necesario */
 }
 
 /* Modal.css */
