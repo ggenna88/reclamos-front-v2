@@ -1,42 +1,27 @@
-import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./Components/Login";
-import { AuthProvider } from "./Context/AuthContext";
-import EdificiosAll from "./Components/EdificiosAll";
-import NotFound from "./Components/NotFound";
-import EdificiosUpdate from "./Components/EdificiosUpdate";
-import UnidadesAll from "./Components/UnidadesAll";
-import UsersAdmin from "./Components/UsersAdmin/UsersAdmin";
-import GestionReclamos from "./Components/GestionReclamos";
-import UsersAdminAddUnidad from "./Components/UsersAdmin/UsersAdminAddUnidad";
-import UsersAdminAddUnidades from "./Components/UsersAdmin/UsersAdminAddUnidades";
+import './App.css';
+import RequireAuth from './components/requireAuth';
+import { Route, Routes } from 'react-router-dom';
+import Dashboard from './views/dashboard/dashboard';
+import SignIn from './views/login/signIn';
+import Layout from './components/layout';
+import Usuarios from './views/usuarios/UsuarioDashboard';
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/edificiosall" element={<EdificiosAll />} />
-          <Route path="/usersall" element={<UsersAdmin />} />
-          <Route path="/usersaddunidad" element={<UsersAdminAddUnidad />} />
-          <Route
-            path="/usersaddunidades/:id/:direccion"
-            element={<UsersAdminAddUnidades />}
-          />
-          <Route path="/reclamos" element={<GestionReclamos />} />
-          <Route
-            path="/edificios-update/:id/:direccion"
-            element={<EdificiosUpdate />}
-          />
-          <Route
-            path="/detalle-unidades/:id/:direccion"
-            element={<UnidadesAll />}
-          />
-          <Route path="/*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
-    </Router>
+    <div className="App">
+          <Routes>
+            <Route path="/" element={<Layout/>}>
+              {/*Public Routes*/}
+              <Route path="/login" element={<SignIn/>}/>
+
+              {/*Protected Routes*/}
+              <Route element={<RequireAuth/>}>
+                <Route path="/usuarios" element={<Usuarios/>}/> 
+                <Route path="/" element={<Dashboard/>}/>
+              </Route>
+            </Route>
+          </Routes>
+    </div>
   );
 }
 
