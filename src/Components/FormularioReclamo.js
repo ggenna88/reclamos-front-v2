@@ -17,10 +17,15 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [edifData, setEdifData] = useState([]);
   const [usersData, setUsers] = useState([]);
   const { token } = useContext(AuthContext);
+  const [userRole, setUserRole] = useState('inquilino');
+  const [userIdd, setUserIdd] = useState(2);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        await GetAllUsers();
+        fetchEdif();
+
         if (reclamoEnEdicion) {
           setTitulo(reclamoEnEdicion.titulo);
           setDescripcion(reclamoEnEdicion.descripcion);
@@ -31,17 +36,20 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
           setEstadoReclamo(reclamoEnEdicion.estadoReclamo);
           setReclamoId(reclamoEnEdicion.reclamo_id);
           setImagenes(reclamoEnEdicion.imagenes || []);
+        } else {
+          if (userRole !== 'admin' && userRole !== 'employee') {
+            setUserId(userIdd);
+          }
         }
+
         cargarImagenes();
-        await GetAllUsers();
-        fetchEdif();
       } catch (error) {
         console.error('Error al cargar datos:', error);
       }
     };
 
     fetchData();
-  }, [reclamoEnEdicion, token]);
+  }, [reclamoEnEdicion, token, userRole, userIdd]);
 
   const cargarImagenes = async () => {
     if (reclamoEnEdicion && reclamoEnEdicion.reclamo_id) {
@@ -82,8 +90,6 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       console.error('Error:', error);
     }
   };
-
-
 
   const GetAllUsers = async () => {
     try {
@@ -198,25 +204,27 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formUserId">
-            <Form.Label>ID Usuario:</Form.Label>
-            <Dropdown>
-              <Dropdown.Toggle variant="light" id="dropdown-usuario">
-                {userId
-                  ? usersData.find((user) => user.id === userId)?.nombre
-                  : 'Selecciona un usuario'}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                {usersData.map((user) => (
-                  <Dropdown.Item
-                    key={user.id}
-                    onClick={() => setUserId(user.id)}>
-                    {user.nombre}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </Form.Group>
+          {userRole === 'admin' || userRole === 'employee' ? (
+            <Form.Group controlId="formUserId">
+              <Form.Label>ID Usuario:</Form.Label>
+              <Dropdown>
+                <Dropdown.Toggle variant="light" id="dropdown-usuario">
+                  {userId
+                    ? usersData.find((user) => user.id === userId)?.nombre
+                    : 'Selecciona un usuario'}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {usersData.map((user) => (
+                    <Dropdown.Item
+                      key={user.id}
+                      onClick={() => setUserId(user.id)}>
+                      {user.nombre}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Form.Group>
+          ) : null}
           <Form.Group controlId="formEdificioId">
             <Form.Label>Edificio:</Form.Label>
             <Dropdown>

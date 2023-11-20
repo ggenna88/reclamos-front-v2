@@ -5,7 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import ReclamoService from '../Services/ReclamoService';
 import { AuthContext } from '../Context/AuthContext';
 
-// Imagen por defecto
+
 const defaultImage = 'https://via.placeholder.com/250x200.png?text=Sin+Foto';
 
 function ReclamoCard({ reclamo, onEdit, onDelete }) {
