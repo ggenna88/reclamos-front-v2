@@ -1,3 +1,4 @@
+
 async function GetAllUsers(params) {
   try {
     const response = await fetch("http://localhost:8080/users/all", {
@@ -17,7 +18,7 @@ async function GetAllUsers(params) {
   }
 }
 
-async function AddUser(user, params) {
+async function AddUser(user,params) {
   try {
     const response = await fetch("http://localhost:8080/auth/register", {
       method: "POST",
@@ -30,14 +31,14 @@ async function AddUser(user, params) {
       origin: "http://localhost:3000",
       credentials: "include",
       referrerPolicy: "strict-origin-when-cross-origin",
-    }).then((res) => res.ok);
+    }).then((res) => res.ok)
     return response;
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
-async function UpdateUser(user, params) {
+async function UpdateUser(user,params) {
   try {
     const username = user.username;
     const response = await fetch(
@@ -61,7 +62,8 @@ async function UpdateUser(user, params) {
   }
 }
 
-async function UpdateUnidadUser(username, id_unidad, auth) {
+async function UpdateUnidadUser(username, id_unidad) {
+  const token = localStorage.getItem("token");
   const apiUrl = "http://localhost:8080/users/updateUnidad";
   const params = {
     username: username,
@@ -71,11 +73,12 @@ async function UpdateUnidadUser(username, id_unidad, auth) {
   const urlWithParams = new URL(apiUrl);
   urlWithParams.search = new URLSearchParams(params).toString();
   try {
+    var bearer = "Bearer " + token;
     const response = await fetch(urlWithParams, {
       method: "PUT",
       withCredentials: true,
       headers: {
-        Authorization: "Bearer " + auth.token,
+        Authorization: bearer,
         "Content-Type": "application/json",
       },
       origin: "http://localhost:3000",
@@ -88,15 +91,19 @@ async function UpdateUnidadUser(username, id_unidad, auth) {
   }
 }
 
-async function RemoveUser(username, params) {
+async function RemoveUser(username) {
+  const token = localStorage.getItem("token");
+
   try {
+    var bearer = "Bearer " + token;
+
     const response = await fetch(
       "http://localhost:8080/users/delete?username=" + username,
       {
         method: "DELETE",
         withCredentials: true,
         headers: {
-          Authorization: "Bearer " + params.token,
+          Authorization: bearer,
           "Content-Type": "application/json",
         },
         origin: "http://localhost:3000",
@@ -110,15 +117,18 @@ async function RemoveUser(username, params) {
   }
 }
 
-async function GetUnidadByUsername(username, auth) {
+async function GetUnidadByUsername(username) {
+  const token = localStorage.getItem("token")
+
   try {
+    var bearer = "Bearer " + token;
     const response = await fetch(
       "http://localhost:8080/users/unidad?user=" + username,
       {
         method: "GET",
         withCredentials: true,
         headers: {
-          Authorization: "Bearer " + auth.token,
+          Authorization: bearer,
           "Content-Type": "application/json",
         },
         origin: "http://localhost:3000",
