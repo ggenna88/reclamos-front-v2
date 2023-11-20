@@ -109,7 +109,7 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
             console.log('Estos son los filtros en service', parametros.filtros.userId, parametros.filtros.buildingId, parametros.filtros.estadoReclamo, parametros.filtros.tipoReclamo)
             const queryParams = new URLSearchParams({
               userid: parametros.filtros.userId,
-              edificioid: parametros.filtros.buildingId,
+              buildingid: parametros.filtros.buildingId,
               state: parametros.filtros.estadoReclamo,
               type: parametros.filtros.tipoReclamo,
             });

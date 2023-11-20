@@ -15,63 +15,98 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [imagenes, setImagenes] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [edifData, setEdifData] = useState([]);
+  const [usersData, setUsers] = useState([]);
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    if (reclamoEnEdicion) {
-      setTitulo(reclamoEnEdicion.titulo);
-      setDescripcion(reclamoEnEdicion.descripcion);
-      setTipoReclamo(reclamoEnEdicion.tipoReclamo);
-      setActualizacion(reclamoEnEdicion.actualizacion);
-      setUserId(reclamoEnEdicion.userid);
-      setEdificioId(reclamoEnEdicion.edificioid);
-      setEstadoReclamo(reclamoEnEdicion.estadoReclamo);
-      setReclamoId(reclamoEnEdicion.reclamo_id);
-      setImagenes(reclamoEnEdicion.imagenes || []);
-      
-    }
-
-    fetchEdif();
-    const cargarImagenes = async () => {
-      if (reclamoEnEdicion && reclamoEnEdicion.reclamo_id) {
-        try {
-          const response = await ReclamoService({
-            tipoLlamada: 'findImagesByReclamoId',
-            parametros: { token: token, id: reclamoEnEdicion.reclamo_id },
-          });
-
-          if (response) {
-            setImagenes(response);
-          }
-        } catch (error) {
-          console.error('Error al obtener imágenes del reclamo:', error);
+    const fetchData = async () => {
+      try {
+        if (reclamoEnEdicion) {
+          setTitulo(reclamoEnEdicion.titulo);
+          setDescripcion(reclamoEnEdicion.descripcion);
+          setTipoReclamo(reclamoEnEdicion.tipoReclamo);
+          setActualizacion(reclamoEnEdicion.actualizacion);
+          setUserId(reclamoEnEdicion.userid);
+          setEdificioId(reclamoEnEdicion.edificioid);
+          setEstadoReclamo(reclamoEnEdicion.estadoReclamo);
+          setReclamoId(reclamoEnEdicion.reclamo_id);
+          setImagenes(reclamoEnEdicion.imagenes || []);
         }
+        cargarImagenes();
+        await GetAllUsers();
+        fetchEdif();
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
       }
     };
-    cargarImagenes();
+
+    fetchData();
   }, [reclamoEnEdicion, token]);
+
+  const cargarImagenes = async () => {
+    if (reclamoEnEdicion && reclamoEnEdicion.reclamo_id) {
+      try {
+        const response = await ReclamoService({
+          tipoLlamada: 'findImagesByReclamoId',
+          parametros: { token: token, id: reclamoEnEdicion.reclamo_id },
+        });
+
+        if (response) {
+          setImagenes(response);
+        }
+      } catch (error) {
+        console.error('Error al obtener imágenes del reclamo:', error);
+      }
+    }
+  };
 
   const fetchEdif = async () => {
     try {
-        const response = await fetch('http://localhost:8080/edificios/all', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        });
+      const response = await fetch('http://localhost:8080/edificios/all', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (response.ok) {
-            const edifData = await response.json();
-            setEdifData(edifData);
-            console.log("Edificios", edifData);
-        } else {
-            console.error('Error al obtener edificios:', response.status);
-        }
+      if (response.ok) {
+        const edifData = await response.json();
+        setEdifData(edifData);
+        console.log('Edificios', edifData);
+        return edifData;
+      } else {
+        console.error('Error al obtener edificios:', response.status);
+      }
     } catch (error) {
-        console.error('Error:', error);
+      console.error('Error:', error);
     }
-};
+  };
+
+
+
+  const GetAllUsers = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/users/all", {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const usersData = await response.json();
+        setUsers(usersData);
+        console.log('Usuarios', usersData);
+        return usersData;
+      } else {
+        console.error('Error al obtener usuarios:', response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const handleEliminarImagen = async () => {
     try {
@@ -110,7 +145,8 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
               nombre: `imagen${imagenes.length + 1}`,
               descripcion: '',
               id_reclamo: reclamoEnEdicion.reclamo_id,
-            }, token: token
+            },
+            token: token,
           },
         });
 
@@ -140,7 +176,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       edificioId,
       estadoReclamo,
       reclamoId,
-      imagenes
+      imagenes,
     });
 
     setTitulo('');
@@ -164,21 +200,33 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formUserId">
             <Form.Label>ID Usuario:</Form.Label>
-            <Form.Control
-              type="text"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-            />
+            <Dropdown>
+              <Dropdown.Toggle variant="light" id="dropdown-usuario">
+                {userId
+                  ? usersData.find((user) => user.id === userId)?.nombre
+                  : 'Selecciona un usuario'}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {usersData.map((user) => (
+                  <Dropdown.Item
+                    key={user.id}
+                    onClick={() => setUserId(user.id)}>
+                    {user.nombre}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </Form.Group>
-          
           <Form.Group controlId="formEdificioId">
             <Form.Label>Edificio:</Form.Label>
             <Dropdown>
               <Dropdown.Toggle variant="light" id="dropdown-edificio">
-                {edificioId ? edifData.find(edif => edif.id === edificioId)?.direccion : 'Selecciona un edificio'}
+                {edificioId
+                  ? edifData.find((edif) => edif.id === edificioId)?.direccion
+                  : 'Selecciona un edificio'}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {edifData.map(edif => (
+                {edifData.map((edif) => (
                   <Dropdown.Item
                     key={edif.id}
                     onClick={() => setEdificioId(edif.id)}
@@ -212,8 +260,12 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
                 {tipoReclamo || 'Selecciona un tipo'}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => setTipoReclamo('PorUnidad')}>PorUnidad</Dropdown.Item>
-                <Dropdown.Item onClick={() => setTipoReclamo('PorEspacioComun')}>PorEspacioComun</Dropdown.Item>
+                <Dropdown.Item onClick={() => setTipoReclamo('PorUnidad')}>
+                  PorUnidad
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setTipoReclamo('PorEspacioComun')}>
+                  PorEspacioComun
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Form.Group>
@@ -224,10 +276,22 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
                 {estadoReclamo || 'Selecciona un tipo'}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => setEstadoReclamo('Nuevo')}>Nuevo</Dropdown.Item>
-                <Dropdown.Item onClick={() => setEstadoReclamo('Actualizado')}>Actualizado</Dropdown.Item>
-                <Dropdown.Item onClick={() => setEstadoReclamo('Desestimado')}>Desestimado</Dropdown.Item>
-                <Dropdown.Item onClick={() => setEstadoReclamo('Cerrado')}>Cerrado</Dropdown.Item>
+                <Dropdown.Item onClick={() => setEstadoReclamo('Nuevo')}>
+                  Nuevo
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setEstadoReclamo('Actualizado')}
+                >
+                  Actualizado
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setEstadoReclamo('Desestimado')}
+                >
+                  Desestimado
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setEstadoReclamo('Cerrado')}>
+                  Cerrado
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Form.Group>
@@ -269,18 +333,33 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
                   variant="danger"
                   size="sm"
                   onClick={handleEliminarImagen}
-                  style={{ position: 'absolute', bottom: '120px', right: '35px', zIndex: 1, marginLeft: '-50px' }}
+                  style={{
+                    position: 'absolute',
+                    bottom: '120px',
+                    right: '35px',
+                    zIndex: 1,
+                    marginLeft: '-50px',
+                  }}
                 >
                   Eliminar
                 </Button>
               )}
-              <Form.Group controlId="formFile" style={{ marginTop: '10px' }}>
+              <Form.Group
+                controlId="formFile"
+                style={{ marginTop: '10px' }}
+              >
                 <Form.Label>Subir nueva imagen:</Form.Label>
                 <input type="file" onChange={handleFileChange} />
               </Form.Group>
             </Form.Group>
           ) : null}
-          <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              marginTop: '15px',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <Button variant="primary" type="submit">
               {reclamoEnEdicion ? 'Actualizar' : 'Crear'}
             </Button>
@@ -289,7 +368,6 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       </Modal.Body>
     </Modal>
   );
-  
 };
 
 export default FormularioReclamo;
