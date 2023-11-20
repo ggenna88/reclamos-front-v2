@@ -1,11 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../Context/AuthContext";
-import UnidadPersonasButton from "../UnidadPersonasButton";
 import { useLocation, useParams } from "react-router-dom";
-import UnidadUpdateButton from "../UnidadUpdateButton";
 import BackButton from "../BackButton";
-import UnidadesDelButton from "../UnidadesDel";
-import UnidadesAddButton from "../UnidadesAddButton";
 import { Navbar } from "../NavBar";
 import ButtonAsignarUnidad from "./ButtonAsignarUnidad";
 
