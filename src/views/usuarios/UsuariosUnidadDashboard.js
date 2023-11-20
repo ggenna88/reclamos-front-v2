@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { React, useState } from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -12,15 +12,13 @@ import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { MainListItems, SecondaryListItems } from "../../Components/listItems";
 //import Chart from './Chart';
-import ReclamosViewer from "../../Components/ReclamosViewer";
-import GridReclamos from "../../Components/ReclamosList";
-import useAuth from "../../hooks/useAuth";
+import UsuariosTable from "./usuariosTable";
+import UsersAdminAddUnidades from "../../Components/UsersAdmin/UsersAdminAddUnidades";
 
 const drawerWidth = 240;
 
@@ -70,29 +68,11 @@ const Drawer = styled(MuiDrawer, {
 
 const defaultTheme = createTheme();
 
-export default function Dashboard() {
-  const { auth } = useAuth();
-
-  const [reclamosList, setReclamosList] = useState([]);
+export default function UsuariosEdificioDashboard() {
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
-
-  useEffect(() => {
-    fetch("http://localhost:8080/reclamo/all", {
-      method: "GET",
-      credentials: "include",
-      referrerPolicy: "strict-origin-when-cross-origin",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((result) => setReclamosList(result))
-      .catch((error) => console.log("Error", error));
-  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -101,7 +81,7 @@ export default function Dashboard() {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: "24px", // keep right padding when drawer closed
+              pr: "24px",
             }}
           >
             <IconButton
@@ -123,7 +103,7 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Menu Principal
+              Usuarios
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={1} color="secondary">
@@ -167,41 +147,10 @@ export default function Dashboard() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  {/*<Chart />*/}
-                  test
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <ReclamosViewer cantidadReclamos={reclamosList.length} />
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <GridReclamos reclamoList={reclamosList} />
-                </Paper>
-              </Grid>
+              {/* CUADRO USUARIOS*/}
             </Grid>
           </Container>
+          <UsersAdminAddUnidades />
         </Box>
       </Box>
     </ThemeProvider>

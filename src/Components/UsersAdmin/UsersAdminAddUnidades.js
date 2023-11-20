@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../Context/AuthContext";
+import useAuth from "../../hooks/useAuth.js";
 import { useLocation, useParams } from "react-router-dom";
 import BackButton from "../BackButton";
 import { Navbar } from "../NavBar";
@@ -7,7 +7,7 @@ import ButtonAsignarUnidad from "./ButtonAsignarUnidad";
 
 const UsersAdminAddUnidades = () => {
   const { id, direccion } = useParams();
-  const { token } = useContext(AuthContext);
+  const { auth } = useAuth();
   const [unidad, setUnidad] = useState([]);
   const location = useLocation();
 
@@ -19,7 +19,7 @@ const UsersAdminAddUnidades = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${auth.token}`,
           },
         }
       );
@@ -38,7 +38,7 @@ const UsersAdminAddUnidades = () => {
 
   useEffect(() => {
     fetchUnidad();
-  }, [token]);
+  }, [auth.token]);
 
   const handleEliminarSuccess = () => {
     fetchUnidad(id);
