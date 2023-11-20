@@ -3,16 +3,13 @@ import {
   GetAllUsers,
   GetUnidadByUsername,
   RemoveUser,
-} from "../../services/UsersService";
+} from "../../Services/usersService";
 import { UsersAdminRow } from "./UsersAdminRow";
 import { UsersAdminModalForm } from "./UsersAdminModalForm";
 import { Navbar } from "../NavBar";
 import { UsersAdminRowUnidad } from "./UsersAdminRowUnidad";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import { alignPropType } from "react-bootstrap/esm/types";
-import { left } from "@popperjs/core";
-
 
 const UsersAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -21,7 +18,7 @@ const UsersAdmin = () => {
   const [passForm, setPassForm] = useState(true);
   const [usernameRowSelected, setUsernameRowSelected] = useState("");
   const [tipoPersonaRowSelected, setTipoPersonaRowSelected] = useState("");
-  const  {auth}  = useAuth();
+  const { auth } = useAuth();
   const navigate = useNavigate();
   const initialUserForm = {
     dni: null,
@@ -61,7 +58,7 @@ const UsersAdmin = () => {
     if (!remove) {
       setVisibleForm(true);
     } else {
-      handlerRemoveUser(user).then(() => {
+      handlerRemoveUser(user, auth).then(() => {
         setVisibleForm(false);
         setUserSelected(initialUserForm);
         setRender(render * -1); //para renderizar y que se vuelva a ejecutar el useEffect
@@ -102,7 +99,7 @@ const UsersAdmin = () => {
     if (result && user.username === "admin") {
       alert("El usuario root no puede ser eliminado");
     } else if (result) {
-      const res = await RemoveUser(user.username);
+      const res = await RemoveUser(user.username, auth);
       return res;
     }
   };
@@ -112,7 +109,7 @@ const UsersAdmin = () => {
     setTipoPersonaRowSelected(tipoPersona);
     setUnidades(initialUnidades);
     setSelectedRow(index);
-    handlerGetUnidadByUsername(username).then((res) => {
+    handlerGetUnidadByUsername(username, auth).then((res) => {
       if (res) {
         let unidad = [
           {
@@ -130,7 +127,7 @@ const UsersAdmin = () => {
   };
 
   const handlerGetUnidadByUsername = async (username) => {
-    const unidades = await GetUnidadByUsername(username);
+    const unidades = await GetUnidadByUsername(username, auth);
     return unidades;
   };
 
@@ -205,7 +202,11 @@ const UsersAdmin = () => {
           </table>
         </div>
       )}
-      <button className="btn btn-primary my-2" onClick={handlerOpenForm} style={{position: 'left'}}>
+      <button
+        className="btn btn-primary my-2"
+        onClick={handlerOpenForm}
+        style={{ position: "left" }}
+      >
         Nuevo
       </button>
       <div>

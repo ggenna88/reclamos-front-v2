@@ -1,6 +1,6 @@
 // EdificiosAll.js
 import React, { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../Context/AuthContext";
+import useAuth from "../../hooks/useAuth.js";
 import EdificioVerButton from "../EdificioVerButton";
 import BackButton from "../BackButton";
 import { Navbar } from "../NavBar";
@@ -8,7 +8,7 @@ import { useLocation } from "react-router-dom";
 import ButtonVerUnidades from "./ButtonVerUnidades";
 
 const UsersAdminAddUnidad = () => {
-  const { token } = useContext(AuthContext);
+  const { auth } = useAuth();
   const [edif, setEdif] = useState([]);
   const [showEdificioAddModal, setShowEdificioAddModal] = useState(false);
   const [showUnidadesAddModal, setShowUnidadesAddModal] = useState(false);
@@ -22,7 +22,7 @@ const UsersAdminAddUnidad = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${auth.token}`,
         },
       });
 
@@ -40,7 +40,7 @@ const UsersAdminAddUnidad = () => {
 
   useEffect(() => {
     fetchEdif();
-  }, [token]);
+  }, [auth.token]);
 
   const handleReload = () => {
     fetchEdif();
