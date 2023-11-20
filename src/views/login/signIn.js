@@ -15,7 +15,7 @@ import  { Alert } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate, useLocation } from 'react-router-dom'; 
 import useAuth from '../../hooks/useAuth';
-import { DecodeJwt, LoginService } from '../../services/LoginService';
+import { DecodeJwt, LoginService } from '../../services/loginService';
 
 
 
