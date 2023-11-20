@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import OptionSelectDropdown from "../OptionSelectDropdown";
-import { AddUser, RemoveUser, UpdateUser } from "../../Services/UsersService";
+import { AddUser, RemoveUser, UpdateUser } from "../../services/UsersService";
 import UsersAdmin from "./UsersAdmin";
+import useAuth from "../../hooks/useAuth";
 
 export const UsersAdminForm = ({
   handlerCloseForm,
@@ -12,14 +13,17 @@ export const UsersAdminForm = ({
   passForm,
   setPassForm,
 }) => {
+  const  {auth}  = useAuth();
   const handlerAddUser = async (user) => {
-    const resUser = await AddUser(user);
+    //console.log("este devuelve auth:", auth);
+    //console.log("este devuelve auth.token:", auth.token);
+    const resUser = await AddUser(user, auth);
     handlerCloseForm();
     return resUser;
   };
 
   const handlerUpdateUser = async (user) => {
-    const resUser = await UpdateUser(user);
+    const resUser = await UpdateUser(user, auth);
     handlerCloseForm();
     return resUser;
   };

@@ -17,7 +17,7 @@ export const UsersAdminModalForm = ({
   };
 
   return (
-    <div className="abrir-modal animacion fadeIn">
+    <div className="abrir-modal animacion fadeIn" >
       <div
         className="modal"
         style={{
@@ -25,14 +25,14 @@ export const UsersAdminModalForm = ({
         }}
         tabIndex="-1"
       >
-        <div className="modal-dialog" role="document">
+        <div className="modal-dialog w-30" role="document"  style={{position: 'fixed', top: '20%', left: '45%', width: '20%'}}>
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">
                 {userSelected.dni !== null ? "Modificar" : "Crear"}
               </h5>
             </div>
-            <div className="modal-body">
+            <div className="modal-body" >
               <UsersAdminForm
                 userSelected={userSelected}
                 setUserSelected={setUserSelected}

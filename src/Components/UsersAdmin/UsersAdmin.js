@@ -3,12 +3,16 @@ import {
   GetAllUsers,
   GetUnidadByUsername,
   RemoveUser,
-} from "../../Services/UsersService";
+} from "../../services/UsersService";
 import { UsersAdminRow } from "./UsersAdminRow";
 import { UsersAdminModalForm } from "./UsersAdminModalForm";
 import { Navbar } from "../NavBar";
 import { UsersAdminRowUnidad } from "./UsersAdminRowUnidad";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import { alignPropType } from "react-bootstrap/esm/types";
+import { left } from "@popperjs/core";
+
 
 const UsersAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -17,6 +21,7 @@ const UsersAdmin = () => {
   const [passForm, setPassForm] = useState(true);
   const [usernameRowSelected, setUsernameRowSelected] = useState("");
   const [tipoPersonaRowSelected, setTipoPersonaRowSelected] = useState("");
+  const  {auth}  = useAuth();
   const navigate = useNavigate();
   const initialUserForm = {
     dni: null,
@@ -66,7 +71,7 @@ const UsersAdmin = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      let initialUsers = await GetAllUsers();
+      let initialUsers = await GetAllUsers(auth);
       return initialUsers;
     };
     fetchUsers().then((res) => setUsers(res));
@@ -131,8 +136,6 @@ const UsersAdmin = () => {
 
   return (
     <div className="container">
-      <Navbar />
-      <h1>ABM de usuarios</h1>
       {!visibleForm || (
         <UsersAdminModalForm
           setVisibleForm={setVisibleForm}
@@ -202,7 +205,7 @@ const UsersAdmin = () => {
           </table>
         </div>
       )}
-      <button className="btn btn-primary my-2" onClick={handlerOpenForm}>
+      <button className="btn btn-primary my-2" onClick={handlerOpenForm} style={{position: 'left'}}>
         Nuevo
       </button>
       <div>

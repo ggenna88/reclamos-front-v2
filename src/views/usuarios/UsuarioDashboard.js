@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {React, useState} from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -18,6 +18,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from '../../components/listItems';
 //import Chart from './Chart';
 import UsuariosTable from './usuariosTable';
+import UsersAdmin from '../../components/UsersAdmin/UsersAdmin'
 
 const drawerWidth = 240;
 
@@ -151,7 +152,7 @@ export default function Usuarios() {
               {/* CUADRO USUARIOS*/}
             </Grid>
           </Container>
-          <UsuariosTable/>
+          <UsersAdmin/>
         </Box>
       </Box>
     </ThemeProvider>
