@@ -171,9 +171,8 @@ async function GetUnidadByUsername(username) {
         credentials: "include",
         referrerPolicy: "strict-origin-when-cross-origin",
       }
-    ).then((res) => {
-      res.ok ? res.json() : console.log("El usuario no tiene unidad");
-    });
+    ).then((res) => res.json());
+    console.log(response);
     return response;
   } catch (error) {
     console.error("Error:", error);

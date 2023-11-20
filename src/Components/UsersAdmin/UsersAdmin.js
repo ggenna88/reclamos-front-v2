@@ -39,13 +39,6 @@ const UsersAdmin = () => {
     },
   ];
 
-  const initialEdificios = [
-    {
-      edificio_id: null,
-      direccion: null,
-    },
-  ];
-
   const [userSelected, setUserSelected] = useState(initialUserForm);
   const [render, setRender] = useState(1);
   const [unidades, setUnidades] = useState(initialUnidades);
@@ -118,6 +111,7 @@ const UsersAdmin = () => {
             piso: res.piso,
           },
         ];
+        console.log("es ta es la unidad");
         console.log(unidad);
         setUnidades(unidad);
       }
