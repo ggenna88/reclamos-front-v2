@@ -1,13 +1,11 @@
-async function GetAllUsers() {
-  const token = localStorage.getItem("token");
 
+async function GetAllUsers(params) {
   try {
-    var bearer = "Bearer " + token;
     const response = await fetch("http://localhost:8080/users/all", {
       method: "GET",
       withCredentials: true,
       headers: {
-        Authorization: bearer,
+        Authorization: "Bearer " + params.token,
         "Content-Type": "application/json",
       },
       origin: "http://localhost:3000",
@@ -20,34 +18,28 @@ async function GetAllUsers() {
   }
 }
 
-async function AddUser(user) {
-  const token = localStorage.getItem("token");
-
+async function AddUser(user,params) {
   try {
-    var bearer = "Bearer " + token;
     const response = await fetch("http://localhost:8080/auth/register", {
       method: "POST",
       withCredentials: true,
       body: JSON.stringify(user),
       headers: {
-        Authorization: bearer,
+        Authorization: "Bearer " + params.token,
         "Content-Type": "application/json",
       },
       origin: "http://localhost:3000",
       credentials: "include",
       referrerPolicy: "strict-origin-when-cross-origin",
-    }).then((res) => res.ok);
+    }).then((res) => res.ok)
     return response;
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
-async function UpdateUser(user) {
-  const token = localStorage.getItem("token");
-
+async function UpdateUser(user,params) {
   try {
-    var bearer = "Bearer " + token;
     const username = user.username;
     const response = await fetch(
       "http://localhost:8080/users/update/" + username,
@@ -56,7 +48,7 @@ async function UpdateUser(user) {
         withCredentials: true,
         body: JSON.stringify(user),
         headers: {
-          Authorization: bearer,
+          Authorization: "Bearer " + params.token,
           "Content-Type": "application/json",
         },
         origin: "http://localhost:3000",
@@ -126,7 +118,7 @@ async function RemoveUser(username) {
 }
 
 async function GetUnidadByUsername(username) {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token")
 
   try {
     var bearer = "Bearer " + token;
