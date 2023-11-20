@@ -14,6 +14,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [reclamoId, setReclamoId] = useState('');
   const [imagenes, setImagenes] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [edifData, setEdifData] = useState([]);
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
@@ -27,7 +28,10 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       setEstadoReclamo(reclamoEnEdicion.estadoReclamo);
       setReclamoId(reclamoEnEdicion.reclamo_id);
       setImagenes(reclamoEnEdicion.imagenes || []);
+      
     }
+
+    fetchEdif();
     const cargarImagenes = async () => {
       if (reclamoEnEdicion && reclamoEnEdicion.reclamo_id) {
         try {
@@ -46,6 +50,28 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
     };
     cargarImagenes();
   }, [reclamoEnEdicion, token]);
+
+  const fetchEdif = async () => {
+    try {
+        const response = await fetch('http://localhost:8080/edificios/all', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const edifData = await response.json();
+            setEdifData(edifData);
+            console.log("Edificios", edifData);
+        } else {
+            console.error('Error al obtener edificios:', response.status);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
 
   const handleEliminarImagen = async () => {
     try {
@@ -144,13 +170,24 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
               onChange={(e) => setUserId(e.target.value)}
             />
           </Form.Group>
+          
           <Form.Group controlId="formEdificioId">
-            <Form.Label>ID Edificio:</Form.Label>
-            <Form.Control
-              type="text"
-              value={edificioId}
-              onChange={(e) => setEdificioId(e.target.value)}
-            />
+            <Form.Label>Edificio:</Form.Label>
+            <Dropdown>
+              <Dropdown.Toggle variant="light" id="dropdown-edificio">
+                {edificioId ? edifData.find(edif => edif.id === edificioId)?.direccion : 'Selecciona un edificio'}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {edifData.map(edif => (
+                  <Dropdown.Item
+                    key={edif.id}
+                    onClick={() => setEdificioId(edif.id)}
+                  >
+                    {edif.direccion}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </Form.Group>
           <Form.Group controlId="formTitulo">
             <Form.Label>Título:</Form.Label>
@@ -229,13 +266,13 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
               </Carousel>
               {imagenes.length > 0 && (
                 <Button
-                variant="danger"
-                size="sm"
-                onClick={handleEliminarImagen}
-                style={{ position: 'absolute', bottom: '120px', right: '35px', zIndex: 1, marginLeft: '-50px' }}
-              >
-                Eliminar
-              </Button>
+                  variant="danger"
+                  size="sm"
+                  onClick={handleEliminarImagen}
+                  style={{ position: 'absolute', bottom: '120px', right: '35px', zIndex: 1, marginLeft: '-50px' }}
+                >
+                  Eliminar
+                </Button>
               )}
               <Form.Group controlId="formFile" style={{ marginTop: '10px' }}>
                 <Form.Label>Subir nueva imagen:</Form.Label>
@@ -252,6 +289,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       </Modal.Body>
     </Modal>
   );
+  
 };
 
 export default FormularioReclamo;
