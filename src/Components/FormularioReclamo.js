@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Button, Form, Dropdown, Carousel } from 'react-bootstrap';
+import ReclamoService from '../Services/ReclamoService';
+import { AuthContext } from '../Context/AuthContext';
 
 const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [titulo, setTitulo] = useState('');
@@ -11,6 +13,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [estadoReclamo, setEstadoReclamo] = useState('Nuevo');
   const [reclamoId, setReclamoId] = useState('');
   const [imagenes, setImagenes] = useState([]);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     if (reclamoEnEdicion) {
@@ -24,11 +27,47 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       setReclamoId(reclamoEnEdicion.reclamo_id);
       setImagenes(reclamoEnEdicion.imagenes || []);
     }
+    const cargarImagenes = async () => {
+      if (reclamoEnEdicion && reclamoEnEdicion.reclamo_id) {
+        try {
+          // Llama al servicio para obtener las imágenes del reclamo en edición
+          const response = await ReclamoService({
+            tipoLlamada: 'findImagesByReclamoId',
+            parametros: { token: token, id: reclamoEnEdicion.reclamo_id },
+          });
+
+          if (response) {
+            // Actualiza el estado local con las imágenes obtenidas
+            setImagenes(response);
+          }
+        } catch (error) {
+          console.error('Error al obtener imágenes del reclamo:', error);
+        }
+      }
+    };
+    cargarImagenes();
   }, [reclamoEnEdicion]);
 
-  const handleEliminarImagen = (id) => {
-    const nuevasImagenes = imagenes.filter((imagen) => imagen.id !== id);
-    setImagenes(nuevasImagenes);
+  const handleEliminarImagen = async (id) => {
+    try {
+      // Llama al servicio para eliminar la imagen por su id
+      await ReclamoService({
+        tipoLlamada: 'deleteImageById',
+        parametros: { id: id, token: token },
+      });
+
+      const response = await ReclamoService({
+        tipoLlamada: 'findImagesByReclamoId',
+        parametros: { token: token, id: reclamoEnEdicion.reclamo_id },
+      });
+
+      if (response) {
+        // Actualiza el estado local con la nueva lista de imágenes
+        setImagenes(response);
+      }
+    } catch (error) {
+      console.error('Error al eliminar imagen:', error);
+    }
   };
 
   const handleDescripcionImagenChange = (id, value) => {
@@ -38,21 +77,38 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
     setImagenes(nuevasImagenes);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    console.log('Este es el file', file);
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const datosImagen = reader.result.split(',')[1];
-        const nuevaImagen = {
-          id: imagenes.length + 1,
-          nombreImagen: `imagen${imagenes.length + 1}`,
-          descripcion: '',
-          datosImagen
-        };
-        setImagenes([...imagenes, nuevaImagen]);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Llama al servicio para subir la nueva imagen
+        await ReclamoService({
+          tipoLlamada: 'uploadImage',
+          parametros: {
+            imagen: {
+              file,
+              nombre: `imagen${imagenes.length + 1}`,
+              descripcion: '',
+              id_reclamo: reclamoEnEdicion.reclamo_id,
+            }, token: token
+          },
+        });
+
+        // Después de cargar la imagen, realiza una nueva llamada para obtener la lista actualizada de imágenes
+        const response = await ReclamoService({
+          tipoLlamada: 'findImagesByReclamoId',
+          parametros: { token: token, id: reclamoEnEdicion.reclamo_id },
+        });
+
+        if (response) {
+          // Actualiza el estado local con la nueva lista de imágenes
+          setImagenes(response);
+        }
+      } catch (error) {
+        console.error('Error al subir imagen:', error);
+      }
     }
   };
 
@@ -156,39 +212,48 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
               onChange={(e) => setActualizacion(e.target.value)}
             />
           </Form.Group>
+                  {reclamoEnEdicion ? (
           <Form.Group controlId="formImagenes">
             <Form.Label>Imágenes:</Form.Label>
-            <Carousel>
+            <Carousel nextLabel="Siguiente" prevLabel="Anterior" style={{ color: 'black' }}>
               {imagenes.map((imagen) => (
                 <Carousel.Item key={imagen.id}>
                   {imagen.datosImagen ? (
                     <>
+                      {/* Imagen */}
                       <img
                         className="d-block w-100"
                         src={`data:image/jpeg;base64,${imagen.datosImagen}`}
                         alt={`Imagen ${imagen.id}`}
+                        style={{ backgroundColor: 'black' }}
                       />
-                      <Carousel.Caption>
-                        <Form.Control
-                          type="text"
-                          placeholder="Descripción de la imagen"
-                          value={imagen.descripcion}
-                          onChange={(e) => handleDescripcionImagenChange(imagen.id, e.target.value)}
-                        />
-                        <Button variant="danger" size="sm" onClick={() => handleEliminarImagen(imagen.id)}>
-                          Eliminar
-                        </Button>
-                      </Carousel.Caption>
+                      <div style={{ marginTop: '10px' }}>
+                      </div>
                     </>
                   ) : null}
                 </Carousel.Item>
               ))}
             </Carousel>
-            <input type="file" onChange={handleFileChange} />
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => handleEliminarImagen(imagenes[0].id)} // Ajusta la lógica según tus necesidades
+              style={{ position: 'absolute', bottom: '10px', right: '10px', zIndex: 1 }}
+            >
+              Eliminar
+            </Button>
+            <Form.Group controlId="formFile" style={{ marginTop: '10px' }}>
+              <Form.Label>Subir nueva imagen:</Form.Label>
+              <input type="file" onChange={handleFileChange} />
+            </Form.Group>
           </Form.Group>
-          <Button variant="success" type="submit">
-            {reclamoEnEdicion ? 'Actualizar' : 'Crear'}
-          </Button>
+        ) : null}
+          <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-between' }}>
+            <Button variant="primary" type="submit">
+              {reclamoEnEdicion ? 'Actualizar' : 'Crear'}
+            </Button>
+            {/* Eliminar el botón de cerrar */}
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

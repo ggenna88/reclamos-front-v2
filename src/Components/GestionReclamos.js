@@ -5,7 +5,6 @@ import "./App2.css";
 import ReclamoService from "../Services/ReclamoService";
 import { AuthContext } from "../Context/AuthContext";
 import FiltrosReclamos from "./FiltrosReclamos";
-import { Navbar } from "react-bootstrap";
 
 const GestionReclamos = () => {
   const { token } = useContext(AuthContext);
@@ -21,7 +20,7 @@ const GestionReclamos = () => {
           tipoLlamada: "obtenerReclamos",
           parametros: { token },
         });
-        setReclamos(reclamosData);
+        setReclamos(reclamosData || []); // Asegurarse de manejar el caso nulo
       } catch (error) {
         console.error("Error al obtener reclamos:", error);
       } finally {
@@ -118,21 +117,39 @@ const GestionReclamos = () => {
         tipoLlamada: "filterReclamos",
         parametros: { token, filtros },
       });
-
-      setReclamos(reclamosData);
+      if (reclamosData) {
+        setReclamos(reclamosData);
+      } else {
+        console.log("No se encontraron reclamos.");
+        setReclamos([]);
+      }
     } catch (error) {
       console.error("Error al aplicar filtros:", error);
     }
   };
 
+  const handleClearFilters = async () => {
+    try {
+      // Limpiar los filtros y obtener todos los reclamos de nuevo
+      const reclamosData = await ReclamoService({
+        tipoLlamada: "obtenerReclamos",
+        parametros: { token },
+      });
+      setReclamos(reclamosData || []);
+    } catch (error) {
+      console.error("Error al limpiar filtros:", error);
+    }
+  };
+
   return (
     <div className="gestion-reclamos">
-      <Navbar />
       <div className="main-content">
         <h2 className="titulo">Gestión de Reclamos</h2>
-        <button className="btn-nuevo-reclamo" onClick={openModal}>
-          Nuevo Reclamo
-        </button>
+        <div className="btn-nuevo-reclamo-container">
+          <button className="btn-nuevo-reclamo" onClick={openModal}>
+            Nuevo Reclamo
+          </button>
+        </div>
         {showModal && (
           <FormularioReclamo
             onSubmit={handleSubmit}
@@ -142,16 +159,27 @@ const GestionReclamos = () => {
         )}
         <div className="grid-container">
           <div className="filtros-container">
-            <FiltrosReclamos onFilter={handleFilter} />
+            <FiltrosReclamos
+              onFilter={handleFilter}
+              onClearFilters={handleClearFilters}
+            />
           </div>
           {loading ? (
             <div className="lista-reclamos-container">Cargando reclamos...</div>
           ) : (
-            <ListaReclamo
-              reclamos={reclamos}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <>
+              {reclamos.length > 0 ? (
+                <ListaReclamo
+                  reclamos={reclamos}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ) : (
+                <div className="lista-reclamos-container">
+                  No existen reclamos.
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

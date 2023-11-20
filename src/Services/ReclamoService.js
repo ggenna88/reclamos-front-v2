@@ -88,7 +88,8 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
             estadoReclamo: parametros.nuevoReclamo.estadoReclamo,
             tipoReclamo: parametros.nuevoReclamo.tipoReclamo,
             actualizacion: parametros.nuevoReclamo.actualizacion,
-            edificioid: parametros.nuevoReclamo.edificioId
+            edificioid: parametros.nuevoReclamo.edificioId,
+         
           };
           const baseUrlActualizarReclamo = `${baseURL}/reclamo/patch/${parametros.nuevoReclamo.reclamoId}`;
           response = await fetch(baseUrlActualizarReclamo, {
@@ -125,8 +126,57 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
             console.log(dataFilterReclamos);
             return dataFilterReclamos;
           break;
+
+          case 'uploadImage':
+            const formData = new FormData();
+            formData.append("file", parametros.imagen.file);
+            formData.append("nombre", parametros.imagen.nombre);
+            formData.append("descripcion", parametros.imagen.descripcion);
+            formData.append("id_reclamo", parametros.imagen.id_reclamo);
           
+            response = await fetch(`${baseURL}/imagen/upload`, {
+              method: "POST",
+              headers: {
+                Authorization: bearer,
+              },
+              body: formData,
+            });
           
+            if (response.ok) {
+              console.log("Upload successful");
+              return null;
+            }
+            break;
+          
+          case 'deleteImageById':
+            response = await fetch(`${baseURL}/imagen/deletebyid/${parametros.id}`, {
+              method: "DELETE",
+              headers: {
+                Authorization: bearer,
+                "Content-Type": "application/json",
+              },
+            });
+          
+            if (response.ok) {
+              console.log("Delete successful");
+              return null;
+            }
+            break;
+          
+          case 'findImagesByReclamoId':
+            response = await fetch(`${baseURL}/imagen/findimagesreclamo/${parseInt(parametros.id)}`, {
+              method: "GET",
+              headers: {
+                Authorization: bearer
+              },
+            });
+          
+            if (response.ok) {
+              const dataFindImages = await response.json();
+              console.log(dataFindImages);
+              return dataFindImages;
+            }
+            break;
 
         default:
           console.error('Tipo de llamada no válido');
