@@ -12,15 +12,32 @@ const GestionReclamos = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [reclamoEnEdicion, setReclamoEnEdicion] = useState(null);
+  const  userRole  = 'tenant';
+  const  userId  = 2;
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("entro aqui 3", userRole)
+      console.log("entro aqui 2", userId)
       try {
-        const reclamosData = await ReclamoService({
-          tipoLlamada: "obtenerReclamos",
-          parametros: { token },
-        });
-        setReclamos(reclamosData || []); // Asegurarse de manejar el caso nulo
+        let reclamosData;
+        if (userRole === 'admin' || userRole === 'employee') {
+          console.log("entro aqui 1")
+          reclamosData = await ReclamoService({
+            tipoLlamada: 'obtenerReclamos',
+            parametros: { token },
+          });
+        } else if (userRole === 'tenant' || userRole === 'owner') {
+          // Si el usuario es inquilino o propietario, aplicar filtro por userId
+          console.log("entro aqui 2")
+          reclamosData = await ReclamoService({
+            tipoLlamada: 'filterReclamos',
+            parametros: { token, filtros: { userId:userId } },
+          });
+          
+        }
+
+        setReclamos(reclamosData || []);
       } catch (error) {
         console.error("Error al obtener reclamos:", error);
       } finally {
@@ -29,7 +46,7 @@ const GestionReclamos = () => {
     };
 
     fetchData();
-  }, [token]);
+  }, [token, userRole, userId]);
 
   const handleEdit = async (id) => {
     try {
@@ -51,17 +68,24 @@ const GestionReclamos = () => {
         tipoLlamada: "deleteReclamoId",
         parametros: { id, token },
       });
-
-      const reclamosData = await ReclamoService({
-        tipoLlamada: "obtenerReclamos",
-        parametros: { token },
-      });
-      setReclamos(reclamosData);
+  
+      if (userRole === 'admin' || userRole === 'employee') {
+        const reclamosData = await ReclamoService({
+          tipoLlamada: 'obtenerReclamos',
+          parametros: { token },
+        });
+        setReclamos(reclamosData);
+      } else {
+        // Si el usuario no es admin o empleado, solo actualizar la lista si es necesario
+        setReclamos((prevReclamos) =>
+          prevReclamos.filter((reclamo) => reclamo.reclamo_id !== id)
+        );
+      }
     } catch (error) {
       console.error("Error al eliminar reclamo:", error);
     }
   };
-
+  
   const handleSubmit = async (nuevoReclamo) => {
     try {
       if (reclamoEnEdicion) {
@@ -78,13 +102,30 @@ const GestionReclamos = () => {
           parametros: { token, nuevoReclamo },
         });
       }
-      console.log("Este es el reclamo en handleSubmit", nuevoReclamo);
-      const reclamosData = await ReclamoService({
-        tipoLlamada: "obtenerReclamos",
-        parametros: { token },
-      });
-      setReclamos(reclamosData);
-
+  
+      if (userRole === 'admin' || userRole === 'employee') {
+        const reclamosData = await ReclamoService({
+          tipoLlamada: 'obtenerReclamos',
+          parametros: { token },
+        });
+        setReclamos(reclamosData);
+      } else {
+        // Si el usuario no es admin o empleado, solo actualizar la lista si es necesario
+        if (reclamoEnEdicion) {
+          // Actualizar el reclamo editado en la lista
+          setReclamos((prevReclamos) =>
+            prevReclamos.map((reclamo) =>
+              reclamo.reclamo_id === nuevoReclamo.reclamo_id
+                ? nuevoReclamo
+                : reclamo
+            )
+          );
+        } else {
+          // Agregar el nuevo reclamo a la lista
+          setReclamos((prevReclamos) => [...prevReclamos, nuevoReclamo]);
+        }
+      }
+  
       setReclamoEnEdicion(null);
       setShowModal(false);
     } catch (error) {

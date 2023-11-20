@@ -1,19 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button, Row, Col, Dropdown } from 'react-bootstrap';
+import { AuthContext } from '../Context/AuthContext';
 
 const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
   const [filtroEdificioId, setFiltroEdificioId] = useState('');
   const [filtroUserId, setFiltroUserId] = useState('');
   const [filtroTipoReclamo, setFiltroTipoReclamo] = useState('');
   const [filtroEstadoReclamo, setFiltroEstadoReclamo] = useState('');
+  const [userRole, setUserRole] = useState('inquilino');
+  const [userId, setUserId] = useState(2);
+  const [edificios, setEdificios] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const { token } = useContext(AuthContext);
+
+
+  useEffect(() => {
+    // Llama a las funciones de obtener edificios y usuarios al cargar el componente
+    obtenerEdificios();
+    obtenerUsuarios();
+  }, []);
+
+
+  const obtenerEdificios = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/edificios/all', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const edificiosData = await response.json();
+        setEdificios(edificiosData);
+        console.log('Edificios', edificiosData);
+      } else {
+        console.error('Error al obtener edificios:', response.status);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const obtenerUsuarios = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/users/all', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const usuariosData = await response.json();
+        setUsuarios(usuariosData);
+        console.log('Usuarios', usuariosData);
+      } else {
+        console.error('Error al obtener usuarios:', response.status);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const handleFilter = () => {
     // Set default values explicitly to avoid sending undefined
-    const userIdValue = filtroUserId !== '' ? filtroUserId : null;
+    const userIdValue = (userRole === 'admin' || userRole === 'employee') ? filtroUserId || userId : userId;
     const buildingIdValue = filtroEdificioId !== '' ? filtroEdificioId : null;
     const tipoReclamoValue = filtroTipoReclamo || null;
     const estadoReclamoValue = filtroEstadoReclamo || null;
-
+  
     // Enviar los filtros al componente padre
     onFilter({
       userId: userIdValue,
@@ -50,10 +108,10 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
             </Dropdown>
           </Form.Group>
         </Col>
-
+  
         <Col>
           <Form.Group controlId="filtroTipoReclamo">
-            <Form.Label>Estado de Reclamo:</Form.Label>
+            <Form.Label>Estado:</Form.Label>
             <Dropdown>
               <Dropdown.Toggle variant="light" id="dropdown-tipo-reclamo">
                 {filtroEstadoReclamo || 'Selecciona un tipo'}
@@ -67,35 +125,60 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
             </Dropdown>
           </Form.Group>
         </Col>
-
-        <Col>
-          <Form.Group controlId="filtroUserId">
-            <Form.Label>Id de Usuario:</Form.Label>
-            <Form.Control
-              type="text"
-              value={filtroUserId}
-              onChange={(e) => setFiltroUserId(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-
+  
+        {(userRole === 'admin' || userRole === 'employee') && (
+          <Col>
+            <Form.Group controlId="filtroUserId">
+              <Form.Label>Usuario:</Form.Label>
+              <Dropdown>
+                <Dropdown.Toggle variant="light" id="dropdown-usuario">
+                  {filtroUserId
+                    ? usuarios.find((user) => user.id === filtroUserId)?.nombre
+                    : 'Selecciona un usuario'}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {usuarios.map((user) => (
+                    <Dropdown.Item
+                      key={user.id}
+                      onClick={() => setFiltroUserId(user.id)}>
+                      {user.nombre}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Form.Group>
+          </Col>
+        )}
+  
         <Col>
           <Form.Group controlId="filtroEdificioId">
-            <Form.Label>Id de Edificio:</Form.Label>
-            <Form.Control
-              type="text"
-              value={filtroEdificioId}
-              onChange={(e) => setFiltroEdificioId(e.target.value)}
-            />
+            <Form.Label>Edificio:</Form.Label>
+            <Dropdown>
+              <Dropdown.Toggle variant="light" id="dropdown-edificio">
+                {filtroEdificioId
+                  ? edificios.find((edif) => edif.id === filtroEdificioId)?.direccion
+                  : 'Selecciona un edificio'}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {edificios.map((edif) => (
+                  <Dropdown.Item
+                    key={edif.id}
+                    onClick={() => setFiltroEdificioId(edif.id)}
+                  >
+                    {edif.direccion}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </Form.Group>
         </Col>
-
+  
         <Col>
           <Button variant="primary" onClick={handleFilter}>
             Filtrar
           </Button>
         </Col>
-
+  
         <Col>
           <Button variant="secondary" onClick={handleClear}>
             Limpiar Filtros
