@@ -1,48 +1,55 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
-import { useNavigate } from "react-router-dom";
-import { useParams } from 'react-router-dom';
-import BackButton from './BackButton';
+import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
-const EdificiosUpdate = () => {
-    const { id, direccion } = useParams();
-    const { token } = useContext(AuthContext);
-    const [newdireccion, setNewDireccion] = useState('');
-    const navigate = useNavigate();
-  
-    const handleDireccionChange = (event) => {
-      setNewDireccion(event.target.value);
-    };
-  
-    const handleModificarEdificio = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/edificios/update/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ direccion: newdireccion }), // Utilizar newdireccion aquí
-        });
-  
-        if (response.ok) {
-          console.log("Edificio modificado correctamente");
-          navigate(-1);
-        } else {
-          console.error('Error al modificar el edificio:', response.status);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+const EdificiosUpdate = ({ id, direccion, onClose }) => {
+  const { token } = useContext(AuthContext);
+  const [newdireccion, setNewDireccion] = useState('');
+
+  const handleDireccionChange = (event) => {
+    setNewDireccion(event.target.value);
+  };
+
+  const handleModificarEdificio = async () => {
+    if (!newdireccion) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, completar los campos',
+      });
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:8080/edificios/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ direccion: newdireccion }),
+      });
+
+      if (response.ok) {
+        console.log("Edificio modificado correctamente");
+        onClose();
+      } else {
+        console.error('Error al modificar el edificio:', response.status);
       }
-    };
-  
-    useEffect(() => {
-      // Puedes realizar alguna lógica adicional si es necesario al cargar el componente
-    }, []);
-  
-    return (
-      <div className="container mt-4">
-        <h1>Modificar edificio {direccion}</h1>
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  useEffect(() => {
+  }, []);
+
+  return (
+    <Modal show={true} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Modificar edificio {direccion}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
         <form>
           <div className="mb-3">
             <label htmlFor="direccion" className="form-label">
@@ -59,12 +66,10 @@ const EdificiosUpdate = () => {
             Modificar Edificio
           </button>
         </form>
-        <div className='text-center mt-3'>
-          <BackButton/>
-      </div>
-      </div>
-    );
-  };
+      </Modal.Body>
+    </Modal>
+  );
+};
 
 
 

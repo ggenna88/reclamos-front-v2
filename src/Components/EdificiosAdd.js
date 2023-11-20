@@ -4,6 +4,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import { Modal, Button, Form } from 'react-bootstrap';
 import UnidadesAdd from './UnidadesAdd';
+import Swal from 'sweetalert2';
 
 const EdificiosAdd = ({ onClose, reload }) => {
   const { token } = useContext(AuthContext);
@@ -27,8 +28,15 @@ const EdificiosAdd = ({ onClose, reload }) => {
       if (response.ok) {
         const edificioId = await response.text();
         console.log("Edificio creado correctamente con ID", edificioId);
-        setIdEdificio({ edificioId });
+        setIdEdificio(edificioId);
         setShowUnidadesAdd(true);
+      } else if (response.status === 409) {
+        const errorMessage = 'Ya existe un edificio registrado con esa dirección';
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: errorMessage,
+        });
       } else {
         console.error('Error al crear el edificio:', response.status);
       }
@@ -58,6 +66,13 @@ const EdificiosAdd = ({ onClose, reload }) => {
               <Form.Control
                 type="text"
                 value={direccion}
+                required
+                onInvalid={(e) =>         Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: "Por favor, ingresar dirección",
+                })
+              }
                 onChange={(e) => setDireccion(e.target.value)}
               />
             </Form.Group>

@@ -1,51 +1,59 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthContext';
-import { useNavigate, useParams } from "react-router-dom";
-import BackButton from './BackButton';
+import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
-const UnidadUpdate = () => {
-    const { id } = useParams();
-    const { token } = useContext(AuthContext);
-    const [numero, setNumero] = useState('');
-    const [piso, setPiso] = useState('');
-    const [estado, setEstado] = useState('Inhabitada');
-    const navigate = useNavigate();
-  
+const UnidadUpdate = ({id, onClose}) => {
+  const { token } = useContext(AuthContext);
+  const [numero, setNumero] = useState('');
+  const [piso, setPiso] = useState('');
+  const [estado, setEstado] = useState('Inhabitada');
 
-    const handleModificarUnidad = async () => {
-        console.log("id: dasda", id)
-      try {
-        const response = await fetch(`http://localhost:8080/unidades/update/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ 
-            nro: numero,
-            piso: piso,
-            estado: estado
-           }), 
-        });
-  
-        if (response.ok) {
-          console.log("Unidad modificada correctamente");
-          navigate(-1);
-        } else {
-          console.error('Error al modificar el edificio:', response.status);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+
+  const handleModificarUnidad = async () => {
+    if (!numero || !piso) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, completar los campos',
+      });
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:8080/unidades/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nro: numero,
+          piso: piso,
+          estado: estado
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Unidad modificada correctamente");
+        onClose();
+      } else {
+        console.error('Error al modificar el edificio:', response.status);
       }
-    };
-  
-    useEffect(() => {
-      // Puedes realizar alguna lógica adicional si es necesario al cargar el componente
-    }, []);
-  
-    return (
-        <div className="container mt-4">
-        <h1>Modificar Unidad</h1>
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  useEffect(() => {
+
+  }, []);
+
+  return (
+    <Modal show={true} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Modificar unidad</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
         <form>
           <div className="mb-3">
             <label htmlFor="numero" className="form-label">
@@ -90,12 +98,10 @@ const UnidadUpdate = () => {
             Guardar y Continuar
           </button>
         </form>
-        <div className='text-center mt-3'>
-          <BackButton/>
-      </div>
-      </div>
-    );
-  };
+      </Modal.Body>
+    </Modal>
+  );
+};
 
 
 
