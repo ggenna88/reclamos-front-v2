@@ -82,7 +82,7 @@ const UnidadesAll = () => {
                             <td style={{ ...cellStyle, textAlign: 'center' }}>{uni.piso}</td>
                             <td style={{ ...cellStyle, textAlign: 'center' }}>{uni.estado}</td>
                             <td style={{ ...cellStyle, textAlign: 'center' }}>
-                                <UnidadPersonasButton nro={uni.nro} piso={uni.piso} personas={uni.personas} />
+                                <UnidadPersonasButton id={uni.id} personas={uni.personas} />
                             </td>
                             <td style={{ ...cellStyle, textAlign: 'center' }}>
                                 <Boton label="Modificar unidad" onClick={() => openUpdateModal(uni.id)} />
@@ -110,7 +110,7 @@ const UnidadesAll = () => {
 
     const renderVacio = () => {
         return (
-            <div className="container d-flex flex-column align-items-center justify-content-center border border-secondary p-4">
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
                 <h2>No hay unidades para mostrar</h2>
 
             </div>

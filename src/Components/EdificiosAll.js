@@ -132,7 +132,7 @@ const EdificiosAll = () => {
 
     const renderVacio = () => {
         return (
-            <div className="container d-flex flex-column align-items-center justify-content-center border border-secondary p-4">
+            <div className="container d-flex flex-column align-items-center justify-content-center border border-light p-4">
                 <h2>No hay edificios para mostrar</h2>
             </div>
         );
