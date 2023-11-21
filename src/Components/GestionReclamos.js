@@ -97,28 +97,23 @@ const GestionReclamos = () => {
         });
       }
   
-      if (userRole === 'admin' || userRole === 'employee') {
-        const reclamosData = await ReclamoService({
+      let reclamosData;
+  
+      // Actualizar la lista según el rol del usuario
+      if (userRole === 'Administrador' || userRole === 'Empleado') {
+        reclamosData = await ReclamoService({
           tipoLlamada: 'obtenerReclamos',
           parametros: { token },
         });
-        setReclamos(reclamosData);
       } else {
-        // Si el usuario no es admin o empleado, solo actualizar la lista si es necesario
-        if (reclamoEnEdicion) {
-          // Actualizar el reclamo editado en la lista
-          setReclamos((prevReclamos) =>
-            prevReclamos.map((reclamo) =>
-              reclamo.reclamo_id === nuevoReclamo.reclamo_id
-                ? nuevoReclamo
-                : reclamo
-            )
-          );
-        } else {
-          // Agregar el nuevo reclamo a la lista
-          setReclamos((prevReclamos) => [...prevReclamos, nuevoReclamo]);
-        }
+        // Si no es administrador o empleado, obtener reclamos filtrados por su userId
+        reclamosData = await ReclamoService({
+          tipoLlamada: 'filterReclamos',
+          parametros: { token, filtros: { userId } },
+        });
       }
+  
+      setReclamos(reclamosData || []);
   
       setReclamoEnEdicion(null);
       setShowModal(false);
@@ -164,14 +159,26 @@ const GestionReclamos = () => {
 
   const handleClearFilters = async () => {
     try {
-      // Limpiar los filtros y obtener todos los reclamos de nuevo
-      const reclamosData = await ReclamoService({
-        tipoLlamada: "obtenerReclamos",
-        parametros: { token },
-      });
+      let reclamosData;
+
+      // Si el usuario es administrador o empleado, obtener todos los reclamos
+      if (userRole === 'Administrador' || userRole === 'Empleado') {
+        reclamosData = await ReclamoService({
+          tipoLlamada: 'obtenerReclamos',
+          parametros: { token },
+        });
+      } else {
+        // Si no es administrador o empleado, obtener reclamos filtrados por su userId
+        console.log("Entrando en los lele")
+        reclamosData = await ReclamoService({
+          tipoLlamada: 'filterReclamos',
+          parametros: { token, filtros:{ userId: userId} },
+        });
+      }
+
       setReclamos(reclamosData || []);
     } catch (error) {
-      console.error("Error al limpiar filtros:", error);
+      console.error('Error al limpiar filtros:', error);
     }
   };
 
