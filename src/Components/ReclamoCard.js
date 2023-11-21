@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
 import ReclamoService from '../Services/ReclamoService';
-import  useAuth  from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 const defaultImage = 'https://via.placeholder.com/250x200.png?text=Sin+Foto';
 
-function ReclamoCard({ reclamo, onEdit, onDelete }) {
+function ReclamoCard({ reclamo, onEdit, onDelete, actualizacionImagenes, setActualizacionImagenes }) {
   const [imagenesReclamo, setImagenesReclamo] = useState([]);
-  const  {auth}  = useAuth();
+  const { auth } = useAuth();
   const token = auth.token;
 
   useEffect(() => {
@@ -29,17 +29,19 @@ function ReclamoCard({ reclamo, onEdit, onDelete }) {
     };
 
     obtenerImagenesReclamo();
-  }, [reclamo.reclamo_id, token]);
+
+    if (actualizacionImagenes) {
+      setActualizacionImagenes(false);
+    }
+  }, [reclamo.reclamo_id, token, actualizacionImagenes]);
 
   const handleEditClick = () => {
     // Llama a la función de edición pasada como prop
-    console.log('Este es el reclamoID', reclamo.reclamo_id);
     onEdit(reclamo.reclamo_id);
   };
 
   const handleDeleteClick = () => {
     // Llama a la función de eliminación pasada como prop
-    console.log('Este es el reclamoID', reclamo.reclamo_id);
     onDelete(reclamo.reclamo_id);
   };
 

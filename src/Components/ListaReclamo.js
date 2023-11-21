@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+
 import ReclamoCard from './ReclamoCard';
 
-const ListaReclamo = ({ reclamos, onEdit, onDelete }) => {
+const ListaReclamo = ({ reclamos, onEdit, onDelete, actualizacionImagenes, setActualizacionImagenes }) => {
   // Agrupa los reclamos en filas de a 2
   const reclamosPorFila = reclamos.reduce((fila, reclamo, index) => {
     if (index % 2 === 0) {
@@ -29,6 +29,8 @@ const ListaReclamo = ({ reclamos, onEdit, onDelete }) => {
                   reclamo={reclamo}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  actualizacionImagenes={actualizacionImagenes}
+                  setActualizacionImagenes={setActualizacionImagenes}
                   className="card mx-auto"
                 />
               )}

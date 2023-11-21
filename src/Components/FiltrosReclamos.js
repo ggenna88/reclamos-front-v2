@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Dropdown } from 'react-bootstrap';
-import  useAuth  from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
-  const  {auth}  = useAuth();
+  const { auth } = useAuth();
   const [filtroEdificioId, setFiltroEdificioId] = useState('');
   const [filtroUserId, setFiltroUserId] = useState('');
   const [filtroTipoReclamo, setFiltroTipoReclamo] = useState('');
@@ -66,12 +66,15 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
   };
 
   const handleFilter = () => {
-    // Set default values explicitly to avoid sending undefined
-    const userIdValue = (userRole === 'Administrador' || userRole === 'Empleado') ? filtroUserId || userId : userId;
+
+    const userIdValue =
+      (userRole === 'Administrador' || userRole === 'Empleado') ?
+        (filtroUserId !== '' ? filtroUserId : null) :
+        userId;
     const buildingIdValue = filtroEdificioId !== '' ? filtroEdificioId : null;
     const tipoReclamoValue = filtroTipoReclamo || null;
     const estadoReclamoValue = filtroEstadoReclamo || null;
-  
+
     // Enviar los filtros al componente padre
     onFilter({
       userId: userIdValue,
@@ -96,7 +99,7 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
       <Row>
         <Col>
           <Form.Group controlId="formTipoReclamo">
-            <Form.Label>Tipo de Reclamo:</Form.Label>
+            <Form.Label>Tipo:</Form.Label>
             <Dropdown>
               <Dropdown.Toggle variant="light" id="dropdown-tipo-reclamo">
                 {filtroTipoReclamo || 'Selecciona un tipo'}
@@ -108,7 +111,7 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
             </Dropdown>
           </Form.Group>
         </Col>
-  
+
         <Col>
           <Form.Group controlId="filtroTipoReclamo">
             <Form.Label>Estado:</Form.Label>
@@ -125,7 +128,7 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
             </Dropdown>
           </Form.Group>
         </Col>
-  
+
         {(userRole === 'Administrador' || userRole === 'Empleado') && (
           <Col>
             <Form.Group controlId="filtroUserId">
@@ -149,7 +152,7 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
             </Form.Group>
           </Col>
         )}
-  
+
         <Col>
           <Form.Group controlId="filtroEdificioId">
             <Form.Label>Edificio:</Form.Label>
@@ -172,13 +175,13 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
             </Dropdown>
           </Form.Group>
         </Col>
-  
+
         <Col>
           <Button variant="primary" onClick={handleFilter}>
             Filtrar
           </Button>
         </Col>
-  
+
         <Col>
           <Button variant="secondary" onClick={handleClear}>
             Limpiar Filtros

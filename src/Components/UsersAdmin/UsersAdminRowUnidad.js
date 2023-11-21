@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
-import { RemoveUnidadUser } from "../../Services/UsersService";
+import { RemoveUnidadUser } from "../../Services/usersService";
 import useAuth from "../../hooks/useAuth";
 /* eslint-disable react/prop-types */
 export const UsersAdminRowUnidad = ({

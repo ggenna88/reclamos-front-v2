@@ -110,8 +110,8 @@ const ReclamoService = async ({ tipoLlamada, parametros }) => {
         const queryParams = new URLSearchParams({
           userid: parametros.filtros.userId || null,
           buildingid: parametros.filtros.buildingId || null,
-          estadoReclamo: parametros.filtros.estadoReclamo || null,
-          tipoReclamo: parametros.filtros.tipoReclamo || null,
+          state: parametros.filtros.estadoReclamo || null,
+          type: parametros.filtros.tipoReclamo || null,
         });
 
         response = await fetch(`${baseURL}/reclamo/filter?${queryParams.toString()}`, {

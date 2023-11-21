@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Boton from "../Boton";
-import { UpdateUnidadUser } from "../../Services/UsersService.js";
+import { UpdateUnidadUser } from "../../Services/usersService.js";
 import useAuth from "../../hooks/useAuth.js";
 
 const ButtonAsignarUnidad = ({ id_unidad, username }) => {

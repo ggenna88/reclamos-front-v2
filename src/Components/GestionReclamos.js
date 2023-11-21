@@ -1,20 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import ListaReclamo from "./ListaReclamo";
 import FormularioReclamo from "./FormularioReclamo";
 import "./App2.css";
 import ReclamoService from "../Services/ReclamoService";
-import  useAuth  from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import FiltrosReclamos from "./FiltrosReclamos";
 
 const GestionReclamos = () => {
-  const  {auth}  = useAuth();
+  const { auth } = useAuth();
   const token = auth.token;
   const [reclamos, setReclamos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [reclamoEnEdicion, setReclamoEnEdicion] = useState(null);
-  const  userRole  = auth.role;
-  const  userId  = auth.id;
+  const [actualizacionImagenes, setActualizacionImagenes] = useState(false);
+  const userRole = auth.role;
+  const userId = auth.id;
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,9 +30,9 @@ const GestionReclamos = () => {
         } else if (userRole === 'Inquilino' || userRole === 'Propietario') {
           reclamosData = await ReclamoService({
             tipoLlamada: 'filterReclamos',
-            parametros: { token, filtros: { userId:userId } },
+            parametros: { token, filtros: { userId: userId } },
           });
-          
+
         }
 
         setReclamos(reclamosData || []);
@@ -45,7 +48,6 @@ const GestionReclamos = () => {
 
   const handleEdit = async (id) => {
     try {
-      console.log("Este es el ID de handleEdit", id);
       const reclamoDetalles = await ReclamoService({
         tipoLlamada: "buscarReclamoId",
         parametros: { id, token },
@@ -63,7 +65,7 @@ const GestionReclamos = () => {
         tipoLlamada: "deleteReclamoId",
         parametros: { id, token },
       });
-  
+
       if (userRole === 'Administrador' || userRole === 'Empleado') {
         const reclamosData = await ReclamoService({
           tipoLlamada: 'obtenerReclamos',
@@ -79,7 +81,7 @@ const GestionReclamos = () => {
       console.error("Error al eliminar reclamo:", error);
     }
   };
-  
+
   const handleSubmit = async (nuevoReclamo) => {
     try {
       if (reclamoEnEdicion) {
@@ -96,9 +98,9 @@ const GestionReclamos = () => {
           parametros: { token, nuevoReclamo },
         });
       }
-  
+
       let reclamosData;
-  
+
       // Actualizar la lista según el rol del usuario
       if (userRole === 'Administrador' || userRole === 'Empleado') {
         reclamosData = await ReclamoService({
@@ -112,24 +114,27 @@ const GestionReclamos = () => {
           parametros: { token, filtros: { userId } },
         });
       }
-  
+
       setReclamos(reclamosData || []);
-  
+
       setReclamoEnEdicion(null);
       setShowModal(false);
+      setActualizacionImagenes(true);
     } catch (error) {
       console.error("Error al crear o actualizar reclamo:", error);
     }
   };
 
-  const openModal = () => {
+  const openModal =  () => {
     setShowModal(true);
     setReclamoEnEdicion(null);
   };
 
-  const closeModal = () => {
+  const closeModal =  () => {
+    setActualizacionImagenes(true);
     setShowModal(false);
     setReclamoEnEdicion(null);
+    
   };
 
   const handleFilter = async (filtros) => {
@@ -140,7 +145,6 @@ const GestionReclamos = () => {
         state = null,
         type = null,
       } = filtros;
-      console.log("Estos son los filtros en Gestion", filtros);
 
       const reclamosData = await ReclamoService({
         tipoLlamada: "filterReclamos",
@@ -169,10 +173,10 @@ const GestionReclamos = () => {
         });
       } else {
         // Si no es administrador o empleado, obtener reclamos filtrados por su userId
-        console.log("Entrando en los lele")
+
         reclamosData = await ReclamoService({
           tipoLlamada: 'filterReclamos',
-          parametros: { token, filtros:{ userId: userId} },
+          parametros: { token, filtros: { userId: userId } },
         });
       }
 
@@ -214,6 +218,8 @@ const GestionReclamos = () => {
                   reclamos={reclamos}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
+                  actualizacionImagenes={actualizacionImagenes}
+                  setActualizacionImagenes={setActualizacionImagenes}
                 />
               ) : (
                 <div className="lista-reclamos-container">

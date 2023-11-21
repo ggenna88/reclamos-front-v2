@@ -88,6 +88,33 @@ async function UpdateUnidadUser(username, id_unidad, auth) {
   }
 }
 
+async function RemoveUnidadUser(username, auth) {
+  const apiUrl = "http://localhost:8080/users/removeUnidad";
+  const params = {
+    username: username,
+  };
+  console.log("debug");
+  console.log(auth.token);
+  const urlWithParams = new URL(apiUrl);
+  urlWithParams.search = new URLSearchParams(params).toString();
+  try {
+    const response = await fetch(urlWithParams, {
+      method: "PUT",
+      withCredentials: true,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+        "Content-Type": "application/json",
+      },
+      origin: "http://localhost:3000",
+      credentials: "include",
+      referrerPolicy: "strict-origin-when-cross-origin",
+    }).then((res) => res.ok);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
 async function RemoveUser(username, params) {
   try {
     const response = await fetch(
@@ -139,4 +166,5 @@ export {
   RemoveUser,
   GetUnidadByUsername,
   UpdateUnidadUser,
+  RemoveUnidadUser,
 };

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Modal, Button, Form, Dropdown, Carousel } from 'react-bootstrap';
 import ReclamoService from '../Services/ReclamoService';
-import  useAuth  from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [titulo, setTitulo] = useState('');
@@ -16,7 +16,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [edifData, setEdifData] = useState([]);
   const [usersData, setUsers] = useState([]);
-  const  {auth}  = useAuth();
+  const { auth } = useAuth();
   const token = auth.token;
   const [userRole, setUserRole] = useState(auth.role);
   const [userIdd, setUserIdd] = useState(auth.id);
@@ -177,7 +177,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
     e.preventDefault();
 
     // Verifica si estás editando un reclamo existente o creando uno nuevo
- 
+
 
     onSubmit({
       titulo,

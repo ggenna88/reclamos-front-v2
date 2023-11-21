@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import OptionSelectDropdown from "../OptionSelectDropdown";
-import { AddUser, RemoveUser, UpdateUser } from "../../Services/UsersService";
+import { AddUser, RemoveUser, UpdateUser } from "../../Services/usersService";
 import UsersAdmin from "./UsersAdmin";
 import useAuth from "../../hooks/useAuth";
 
