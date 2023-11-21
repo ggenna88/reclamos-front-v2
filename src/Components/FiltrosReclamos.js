@@ -3,15 +3,16 @@ import { Form, Button, Row, Col, Dropdown } from 'react-bootstrap';
 import  useAuth  from "../hooks/useAuth";
 
 const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
+  const  {auth}  = useAuth();
   const [filtroEdificioId, setFiltroEdificioId] = useState('');
   const [filtroUserId, setFiltroUserId] = useState('');
   const [filtroTipoReclamo, setFiltroTipoReclamo] = useState('');
   const [filtroEstadoReclamo, setFiltroEstadoReclamo] = useState('');
-  const [userRole, setUserRole] = useState('inquilino');
-  const [userId, setUserId] = useState(2);
+  const [userRole, setUserRole] = useState(auth.role);
+  const [userId, setUserId] = useState(auth.id);
   const [edificios, setEdificios] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
-  const  token  = useAuth();
+  const token = auth.token;
 
 
   useEffect(() => {
@@ -56,7 +57,6 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
       if (response.ok) {
         const usuariosData = await response.json();
         setUsuarios(usuariosData);
-        console.log('Usuarios', usuariosData);
       } else {
         console.error('Error al obtener usuarios:', response.status);
       }
@@ -67,7 +67,7 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
 
   const handleFilter = () => {
     // Set default values explicitly to avoid sending undefined
-    const userIdValue = (userRole === 'admin' || userRole === 'employee') ? filtroUserId || userId : userId;
+    const userIdValue = (userRole === 'Administrador' || userRole === 'Empleado') ? filtroUserId || userId : userId;
     const buildingIdValue = filtroEdificioId !== '' ? filtroEdificioId : null;
     const tipoReclamoValue = filtroTipoReclamo || null;
     const estadoReclamoValue = filtroEstadoReclamo || null;
@@ -126,7 +126,7 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
           </Form.Group>
         </Col>
   
-        {(userRole === 'admin' || userRole === 'employee') && (
+        {(userRole === 'Administrador' || userRole === 'Empleado') && (
           <Col>
             <Form.Group controlId="filtroUserId">
               <Form.Label>Usuario:</Form.Label>

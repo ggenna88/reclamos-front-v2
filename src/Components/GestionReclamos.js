@@ -7,29 +7,24 @@ import  useAuth  from "../hooks/useAuth";
 import FiltrosReclamos from "./FiltrosReclamos";
 
 const GestionReclamos = () => {
-  const  token  = useAuth();
+  const  {auth}  = useAuth();
+  const token = auth.token;
   const [reclamos, setReclamos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [reclamoEnEdicion, setReclamoEnEdicion] = useState(null);
-  const  userRole  = 'tenant';
-  const  userId  = 2;
-
+  const  userRole  = auth.role;
+  const  userId  = auth.id;
   useEffect(() => {
     const fetchData = async () => {
-      console.log("entro aqui 3", userRole)
-      console.log("entro aqui 2", userId)
       try {
         let reclamosData;
-        if (userRole === 'admin' || userRole === 'employee') {
-          console.log("entro aqui 1")
+        if (userRole === 'Administrador' || userRole === 'Empleado') {
           reclamosData = await ReclamoService({
             tipoLlamada: 'obtenerReclamos',
             parametros: { token },
           });
-        } else if (userRole === 'tenant' || userRole === 'owner') {
-          // Si el usuario es inquilino o propietario, aplicar filtro por userId
-          console.log("entro aqui 2")
+        } else if (userRole === 'Inquilino' || userRole === 'Propietario') {
           reclamosData = await ReclamoService({
             tipoLlamada: 'filterReclamos',
             parametros: { token, filtros: { userId:userId } },
@@ -69,14 +64,13 @@ const GestionReclamos = () => {
         parametros: { id, token },
       });
   
-      if (userRole === 'admin' || userRole === 'employee') {
+      if (userRole === 'Administrador' || userRole === 'Empleado') {
         const reclamosData = await ReclamoService({
           tipoLlamada: 'obtenerReclamos',
           parametros: { token },
         });
         setReclamos(reclamosData);
       } else {
-        // Si el usuario no es admin o empleado, solo actualizar la lista si es necesario
         setReclamos((prevReclamos) =>
           prevReclamos.filter((reclamo) => reclamo.reclamo_id !== id)
         );
@@ -145,7 +139,6 @@ const GestionReclamos = () => {
 
   const handleFilter = async (filtros) => {
     try {
-      // Provide default values for the parameters to avoid sending undefined
       const {
         userId = null,
         buildingId = null,

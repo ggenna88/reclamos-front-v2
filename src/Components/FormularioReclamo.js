@@ -16,9 +16,10 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [edifData, setEdifData] = useState([]);
   const [usersData, setUsers] = useState([]);
-  const  token  = useAuth();
-  const [userRole, setUserRole] = useState('inquilino');
-  const [userIdd, setUserIdd] = useState(2);
+  const  {auth}  = useAuth();
+  const token = auth.token;
+  const [userRole, setUserRole] = useState(auth.role);
+  const [userIdd, setUserIdd] = useState(auth.id);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +38,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
           setReclamoId(reclamoEnEdicion.reclamo_id);
           setImagenes(reclamoEnEdicion.imagenes || []);
         } else {
-          if (userRole !== 'admin' && userRole !== 'employee') {
+          if (userRole !== 'Administrador' && userRole !== 'Empleado') {
             setUserId(userIdd);
           }
         }
@@ -204,7 +205,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          {userRole === 'admin' || userRole === 'employee' ? (
+          {userRole === 'Administrador' || userRole === 'Empleado' ? (
             <Form.Group controlId="formUserId">
               <Form.Label>ID Usuario:</Form.Label>
               <Dropdown>

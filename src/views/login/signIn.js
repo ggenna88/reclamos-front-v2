@@ -53,11 +53,13 @@ export default function SignIn() {
       const token = await LoginService(username, password);
 
       if (token) {
-        const role = DecodeJwt(token)[0]["authority"];
-        setAuth({ token, role });
+        const role = DecodeJwt(token).role[0]["authority"];
+        const id = DecodeJwt(token).id;
+        setAuth({ token, role, username, id });
         console.log("Login successful ", {
           token: { token },
           permiso: { role },
+          id: {id}
         });
         navigate(from, { replace: true });
       } else {

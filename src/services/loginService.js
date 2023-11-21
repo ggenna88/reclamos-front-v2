@@ -18,5 +18,5 @@ export async function LoginService(username, password) {
     const token = jwt;
     const [, payload] = token.split('.');
     const decodedPayload = JSON.parse(atob(payload));
-    return decodedPayload.role;
+    return decodedPayload;
   }

@@ -9,7 +9,8 @@ const defaultImage = 'https://via.placeholder.com/250x200.png?text=Sin+Foto';
 
 function ReclamoCard({ reclamo, onEdit, onDelete }) {
   const [imagenesReclamo, setImagenesReclamo] = useState([]);
-  const  token  = useAuth();
+  const  {auth}  = useAuth();
+  const token = auth.token;
 
   useEffect(() => {
     const obtenerImagenesReclamo = async () => {
