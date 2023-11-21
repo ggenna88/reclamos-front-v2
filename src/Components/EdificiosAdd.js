@@ -1,26 +1,25 @@
 //EdificiosAdd.js
 
-import React, { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '../Context/AuthContext';
-import { Modal, Button, Form } from 'react-bootstrap';
-import UnidadesAdd from './UnidadesAdd';
-import Swal from 'sweetalert2';
+import React, { useContext, useState, useEffect } from "react";
+import useAuth from "../hooks/useAuth";
+import { Modal, Button, Form } from "react-bootstrap";
+import UnidadesAdd from "./UnidadesAdd";
+import Swal from "sweetalert2";
 
 const EdificiosAdd = ({ onClose, reload }) => {
-  const { token } = useContext(AuthContext);
-  const [direccion, setDireccion] = useState('');
+  const { auth } = useAuth();
+  const [direccion, setDireccion] = useState("");
   const [showUnidadesAdd, setShowUnidadesAdd] = useState(false);
   const [idEdificio, setIdEdificio] = useState(null);
-
 
   const handleAgregarEdificio = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/edificios/add', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/edificios/add", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         },
         body: JSON.stringify({ direccion }), // Enviar la dirección como parte del cuerpo de la solicitud
       });
@@ -31,20 +30,20 @@ const EdificiosAdd = ({ onClose, reload }) => {
         setIdEdificio(edificioId);
         setShowUnidadesAdd(true);
       } else if (response.status === 409) {
-        const errorMessage = 'Ya existe un edificio registrado con esa dirección';
+        const errorMessage =
+          "Ya existe un edificio registrado con esa dirección";
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
+          icon: "error",
+          title: "Error",
           text: errorMessage,
         });
       } else {
-        console.error('Error al crear el edificio:', response.status);
+        console.error("Error al crear el edificio:", response.status);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
-
 
   return (
     <Modal show={true} onHide={onClose}>
@@ -53,11 +52,13 @@ const EdificiosAdd = ({ onClose, reload }) => {
       </Modal.Header>
       <Modal.Body>
         {showUnidadesAdd ? (
-          <UnidadesAdd edificioId={idEdificio} reload={reload} onClose={() => {
-            setShowUnidadesAdd(false);
-            onClose();
-          }
-          }
+          <UnidadesAdd
+            edificioId={idEdificio}
+            reload={reload}
+            onClose={() => {
+              setShowUnidadesAdd(false);
+              onClose();
+            }}
           />
         ) : (
           <Form onSubmit={handleAgregarEdificio}>
@@ -67,19 +68,18 @@ const EdificiosAdd = ({ onClose, reload }) => {
                 type="text"
                 value={direccion}
                 required
-                onInvalid={(e) =>         Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: "Por favor, ingresar dirección",
-                })
-              }
+                onInvalid={(e) =>
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Por favor, ingresar dirección",
+                  })
+                }
                 onChange={(e) => setDireccion(e.target.value)}
               />
             </Form.Group>
             <div className="text-center mt-2">
-              <Button type="submit">
-                Agregar edificio
-              </Button>
+              <Button type="submit">Agregar edificio</Button>
             </div>
           </Form>
         )}
@@ -87,7 +87,5 @@ const EdificiosAdd = ({ onClose, reload }) => {
     </Modal>
   );
 };
-
-
 
 export default EdificiosAdd;

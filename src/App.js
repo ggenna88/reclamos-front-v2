@@ -8,6 +8,8 @@ import Usuarios from "./views/usuarios/UsuarioDashboard";
 import UsuariosEdificioDashboard from "./views/usuarios/UsuariosEdificioDashboard";
 import UsuariosUnidadDashboard from "./views/usuarios/UsuariosUnidadDashboard";
 import ReclamosDashboard from "./views/reclamo/ReclamoDashboard";
+import EdificioDashboard from "./views/edificios/EdificioDashboard";
+import UnidadDashboard from "./views/edificios/UnidadDashboard";
 
 function App() {
   return (
@@ -28,10 +30,12 @@ function App() {
               path="/usersaddunidades/:id/:direccion"
               element={<UsuariosUnidadDashboard />}
             />
+            <Route path="/edificios" element={<EdificioDashboard />} />
             <Route
-              path="/reclamos"
-              element={<ReclamosDashboard/>}
+              path="/detalle-unidades/:id/:direccion"
+              element={<UnidadDashboard />}
             />
+            <Route path="/reclamos" element={<ReclamosDashboard />} />
             <Route path="/" element={<Dashboard />} />
           </Route>
         </Route>

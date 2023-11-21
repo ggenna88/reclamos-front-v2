@@ -1,52 +1,52 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '../Context/AuthContext';
-import { Modal } from 'react-bootstrap';
-import Swal from 'sweetalert2';
+import React, { useContext, useState, useEffect } from "react";
+import useAuth from "../hooks/useAuth";
+import { Modal } from "react-bootstrap";
+import Swal from "sweetalert2";
 
-const UnidadUpdate = ({id, onClose}) => {
-  const { token } = useContext(AuthContext);
-  const [numero, setNumero] = useState('');
-  const [piso, setPiso] = useState('');
-  const [estado, setEstado] = useState('Inhabitada');
-
+const UnidadUpdate = ({ id, onClose }) => {
+  const { auth } = useAuth();
+  const [numero, setNumero] = useState("");
+  const [piso, setPiso] = useState("");
+  const [estado, setEstado] = useState("Inhabitada");
 
   const handleModificarUnidad = async () => {
     if (!numero || !piso) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Por favor, completar los campos',
+        icon: "error",
+        title: "Error",
+        text: "Por favor, completar los campos",
       });
       return;
     }
     try {
-      const response = await fetch(`http://localhost:8080/unidades/update/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          nro: numero,
-          piso: piso,
-          estado: estado
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:8080/unidades/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+          body: JSON.stringify({
+            nro: numero,
+            piso: piso,
+            estado: estado,
+          }),
+        }
+      );
 
       if (response.ok) {
         console.log("Unidad modificada correctamente");
         onClose();
       } else {
-        console.error('Error al modificar el edificio:', response.status);
+        console.error("Error al modificar el edificio:", response.status);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Modal show={true} onHide={onClose}>
@@ -94,7 +94,11 @@ const UnidadUpdate = ({id, onClose}) => {
               <option value="HabitadaPorDuenio">Habitada por dueño</option>
             </select>
           </div>
-          <button type="button" className="btn btn-primary me-2" onClick={handleModificarUnidad}>
+          <button
+            type="button"
+            className="btn btn-primary me-2"
+            onClick={handleModificarUnidad}
+          >
             Guardar y Continuar
           </button>
         </form>
@@ -102,7 +106,5 @@ const UnidadUpdate = ({id, onClose}) => {
     </Modal>
   );
 };
-
-
 
 export default UnidadUpdate;

@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '../Context/AuthContext';
-import { Modal } from 'react-bootstrap';
-import Swal from 'sweetalert2';
+import React, { useContext, useState, useEffect } from "react";
+import useAuth from "../hooks/useAuth";
+import { Modal } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 const EdificiosUpdate = ({ id, direccion, onClose }) => {
-  const { token } = useContext(AuthContext);
-  const [newdireccion, setNewDireccion] = useState('');
+  const { auth } = useAuth();
+  const [newdireccion, setNewDireccion] = useState("");
 
   const handleDireccionChange = (event) => {
     setNewDireccion(event.target.value);
@@ -14,35 +14,37 @@ const EdificiosUpdate = ({ id, direccion, onClose }) => {
   const handleModificarEdificio = async () => {
     if (!newdireccion) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Por favor, completar los campos',
+        icon: "error",
+        title: "Error",
+        text: "Por favor, completar los campos",
       });
       return;
     }
     try {
-      const response = await fetch(`http://localhost:8080/edificios/update/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ direccion: newdireccion }),
-      });
+      const response = await fetch(
+        `http://localhost:8080/edificios/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+          body: JSON.stringify({ direccion: newdireccion }),
+        }
+      );
 
       if (response.ok) {
         console.log("Edificio modificado correctamente");
         onClose();
       } else {
-        console.error('Error al modificar el edificio:', response.status);
+        console.error("Error al modificar el edificio:", response.status);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Modal show={true} onHide={onClose}>
@@ -62,7 +64,11 @@ const EdificiosUpdate = ({ id, direccion, onClose }) => {
               onChange={handleDireccionChange}
             />
           </div>
-          <button type="button" className="btn btn-primary" onClick={handleModificarEdificio}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleModificarEdificio}
+          >
             Modificar Edificio
           </button>
         </form>
@@ -70,7 +76,5 @@ const EdificiosUpdate = ({ id, direccion, onClose }) => {
     </Modal>
   );
 };
-
-
 
 export default EdificiosUpdate;
