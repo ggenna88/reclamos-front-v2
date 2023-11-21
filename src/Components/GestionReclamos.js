@@ -71,7 +71,7 @@ const GestionReclamos = () => {
           tipoLlamada: 'obtenerReclamos',
           parametros: { token },
         });
-        setReclamos(reclamosData);
+        setReclamos(reclamosData || []);
       } else {
         setReclamos((prevReclamos) =>
           prevReclamos.filter((reclamo) => reclamo.reclamo_id !== id)
