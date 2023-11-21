@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Dropdown, Carousel } from 'react-bootstrap';
 import ReclamoService from '../Services/ReclamoService';
 import useAuth from "../hooks/useAuth";

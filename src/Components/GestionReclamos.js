@@ -125,16 +125,16 @@ const GestionReclamos = () => {
     }
   };
 
-  const openModal =  () => {
+  const openModal = () => {
     setShowModal(true);
     setReclamoEnEdicion(null);
   };
 
-  const closeModal =  () => {
+  const closeModal = () => {
     setActualizacionImagenes(true);
     setShowModal(false);
     setReclamoEnEdicion(null);
-    
+
   };
 
   const handleFilter = async (filtros) => {
