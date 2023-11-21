@@ -21,6 +21,7 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
   const [userRole, setUserRole] = useState(auth.role);
   const [userIdd, setUserIdd] = useState(auth.id);
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -174,6 +175,10 @@ const FormularioReclamo = ({ onSubmit, onClose, reclamoEnEdicion }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Verifica si estás editando un reclamo existente o creando uno nuevo
+ 
+
     onSubmit({
       titulo,
       descripcion,
