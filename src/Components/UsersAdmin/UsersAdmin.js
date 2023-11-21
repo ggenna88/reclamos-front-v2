@@ -3,7 +3,7 @@ import {
   GetAllUsers,
   GetUnidadByUsername,
   RemoveUser,
-} from "../../Services/usersService";
+} from "../../Services/UsersService";
 import { UsersAdminRow } from "./UsersAdminRow";
 import { UsersAdminModalForm } from "./UsersAdminModalForm";
 import { Navbar } from "../NavBar";

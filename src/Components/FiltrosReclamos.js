@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button, Row, Col, Dropdown } from 'react-bootstrap';
-import { AuthContext } from '../Context/AuthContext';
+import  useAuth  from "../hooks/useAuth";
 
 const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
   const [filtroEdificioId, setFiltroEdificioId] = useState('');
@@ -11,7 +11,7 @@ const FiltrosReclamos = ({ onFilter, onClearFilters }) => {
   const [userId, setUserId] = useState(2);
   const [edificios, setEdificios] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
-  const { token } = useContext(AuthContext);
+  const  token  = useAuth();
 
 
   useEffect(() => {

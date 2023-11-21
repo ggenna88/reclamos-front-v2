@@ -34,7 +34,7 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="Edificios" />
       </ListItemButton>
-      <ListItemButton>
+      <ListItemButton onClick={() => {navigate("/reclamos")}}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>

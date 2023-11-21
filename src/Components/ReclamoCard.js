@@ -3,14 +3,13 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
 import ReclamoService from '../Services/ReclamoService';
-import { AuthContext } from '../Context/AuthContext';
-
+import  useAuth  from "../hooks/useAuth";
 
 const defaultImage = 'https://via.placeholder.com/250x200.png?text=Sin+Foto';
 
 function ReclamoCard({ reclamo, onEdit, onDelete }) {
   const [imagenesReclamo, setImagenesReclamo] = useState([]);
-  const { token } = useContext(AuthContext);
+  const  token  = useAuth();
 
   useEffect(() => {
     const obtenerImagenesReclamo = async () => {

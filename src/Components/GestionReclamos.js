@@ -3,11 +3,11 @@ import ListaReclamo from "./ListaReclamo";
 import FormularioReclamo from "./FormularioReclamo";
 import "./App2.css";
 import ReclamoService from "../Services/ReclamoService";
-import { AuthContext } from "../Context/AuthContext";
+import  useAuth  from "../hooks/useAuth";
 import FiltrosReclamos from "./FiltrosReclamos";
 
 const GestionReclamos = () => {
-  const { token } = useContext(AuthContext);
+  const  token  = useAuth();
   const [reclamos, setReclamos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);

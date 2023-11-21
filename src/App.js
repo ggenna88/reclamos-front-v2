@@ -7,6 +7,7 @@ import Layout from "./Components/layout";
 import Usuarios from "./views/usuarios/UsuarioDashboard";
 import UsuariosEdificioDashboard from "./views/usuarios/UsuariosEdificioDashboard";
 import UsuariosUnidadDashboard from "./views/usuarios/UsuariosUnidadDashboard";
+import ReclamosDashboard from "./views/reclamo/ReclamoDashboard";
 
 function App() {
   return (
@@ -26,6 +27,10 @@ function App() {
             <Route
               path="/usersaddunidades/:id/:direccion"
               element={<UsuariosUnidadDashboard />}
+            />
+            <Route
+              path="/reclamos"
+              element={<ReclamosDashboard/>}
             />
             <Route path="/" element={<Dashboard />} />
           </Route>
