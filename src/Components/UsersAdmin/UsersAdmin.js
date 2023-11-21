@@ -245,6 +245,10 @@ const UsersAdmin = () => {
                   piso={piso}
                   handlerUserSelectedForm={handlerUserSelectedForm}
                   setPassForm={setPassForm}
+                  usernameRowSelected={usernameRowSelected}
+                  handlerGetUnidadByUsername={handlerGetUnidadByUsername}
+                  setUnidades={setUnidades}
+                  initialUnidades={initialUnidades}
                 />
               ))
             )}
